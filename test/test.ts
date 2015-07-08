@@ -166,6 +166,7 @@ describe('Service tests', () => {
         });
 
     });
+
     describe('Headers', () => {
 
         it('should add custom headers to a request', () => {
@@ -224,7 +225,33 @@ describe('Service tests', () => {
 
 
 
-    })
+    });
+
+    describe('Custom config', () => {
+
+        it('should be able to override the $http config', () => {
+
+            $httpBackend.expectGET('/api/any?foo=bar',  (headers) => {
+                console.log('headers', headers);
+                return headers['Accept'] == 'text/csv';
+            }).respond(200);
+            let responsePromise = ngRestAdapterService.get('/any', null, {
+                headers: {
+                    'Accept':'text/csv'
+                },
+                responseType: 'text',
+                params: {
+                    foo: 'bar'
+                }
+            });
+
+            $httpBackend.flush();
+            expect(responsePromise).eventually.to.be.fulfilled;
+
+        });
+
+
+    });
 
 
 });
