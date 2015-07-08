@@ -48,14 +48,14 @@ declare module NgRestAdapter {
     class NgRestAdapterService implements INgRestAdapterService {
         private config;
         private $http;
-        private $window;
+        private uuid4;
         /**
          * Construct the service with dependencies injected
          * @param config
          * @param $http
-         * @param $window
+         * @param uuid4
          */
-        constructor(config: INgRestAdapterServiceConfig, $http: ng.IHttpService, $window: ng.IWindowService);
+        constructor(config: INgRestAdapterServiceConfig, $http: ng.IHttpService, uuid4: any);
         private sendRequest(method, url, requestHeaders?, data?, configOverrides?);
         options(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         get(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
@@ -94,6 +94,6 @@ declare module NgRestAdapter {
          * @returns {NgRestAdapter.NgRestAdapterServiceProvider}
          */
         configure(config: INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
-        $get: (string | (($http: any, $window: any) => NgRestAdapterService))[];
+        $get: (string | (($http: any, uuid4: any) => NgRestAdapterService))[];
     }
 }
