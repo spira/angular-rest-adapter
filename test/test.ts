@@ -1,5 +1,5 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../dist/NgRestAdapter.d.ts" />
+/// <reference path="../dist/ngRestAdapter.d.ts" />
 
 
 let expect = chai.expect;
