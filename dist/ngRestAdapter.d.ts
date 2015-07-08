@@ -47,15 +47,15 @@ declare module NgRestAdapter {
 declare module NgRestAdapter {
     class NgRestAdapterService implements INgRestAdapterService {
         private config;
-        private $q;
         private $http;
+        private $window;
         /**
          * Construct the service with dependencies injected
          * @param config
-         * @param $q
          * @param $http
+         * @param $window
          */
-        constructor(config: INgRestAdapterServiceConfig, $q: ng.IQService, $http: ng.IHttpService);
+        constructor(config: INgRestAdapterServiceConfig, $http: ng.IHttpService, $window: ng.IWindowService);
         private sendRequest(method, url, requestHeaders?, data?, configOverrides?);
         options(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         get(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
@@ -64,7 +64,7 @@ declare module NgRestAdapter {
         post(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         patch(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         remove(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
-        api(url: string): NgRestAdapter.NgRestAdapterService;
+        api(url: string): NgRestAdapterService;
         uuid(): string;
         isUuid(uuid: string): boolean;
         getConfig(): NgRestAdapter.INgRestAdapterServiceConfig;
@@ -94,6 +94,6 @@ declare module NgRestAdapter {
          * @returns {NgRestAdapter.NgRestAdapterServiceProvider}
          */
         configure(config: INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
-        $get: (string | (($q: any, $http: any) => NgRestAdapterService))[];
+        $get: (string | (($http: any, $window: any) => NgRestAdapterService))[];
     }
 }

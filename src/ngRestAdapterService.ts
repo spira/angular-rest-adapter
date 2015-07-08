@@ -10,10 +10,12 @@ module NgRestAdapter {
          * Construct the service with dependencies injected
          * @param config
          * @param $http
+         * @param $window
          */
         constructor(
             private config:INgRestAdapterServiceConfig,
-            private $http: ng.IHttpService
+            private $http: ng.IHttpService,
+            private $window: ng.IWindowService
         ) {
 
         }
@@ -85,15 +87,15 @@ module NgRestAdapter {
 
             let config = <INgRestAdapterServiceConfig>_.defaults({baseUrl:url}, this.config);
 
-            return new NgRestAdapterService(config, this.$http);
+            return new NgRestAdapterService(config, this.$http, this.$window);
         }
 
         public uuid():string {
-            return undefined;
+            return <string>(<any>this.$window).lil.uuid();
         }
 
         public isUuid(uuid:string):boolean {
-            return undefined;
+            return <boolean>(<any>this.$window).lil.isUuid(uuid, 4);
         }
 
         public getConfig():NgRestAdapter.INgRestAdapterServiceConfig {

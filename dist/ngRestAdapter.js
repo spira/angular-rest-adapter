@@ -44,10 +44,12 @@ var NgRestAdapter;
          * Construct the service with dependencies injected
          * @param config
          * @param $http
+         * @param $window
          */
-        function NgRestAdapterService(config, $http) {
+        function NgRestAdapterService(config, $http, $window) {
             this.config = config;
             this.$http = $http;
+            this.$window = $window;
         }
         NgRestAdapterService.prototype.sendRequest = function (method, url, requestHeaders, data, configOverrides) {
             if (requestHeaders === void 0) { requestHeaders = {}; }
@@ -100,13 +102,13 @@ var NgRestAdapter;
         };
         NgRestAdapterService.prototype.api = function (url) {
             var config = _.defaults({ baseUrl: url }, this.config);
-            return new NgRestAdapterService(config, this.$http);
+            return new NgRestAdapterService(config, this.$http, this.$window);
         };
         NgRestAdapterService.prototype.uuid = function () {
-            return undefined;
+            return this.$window.lil.uuid();
         };
         NgRestAdapterService.prototype.isUuid = function (uuid) {
-            return undefined;
+            return this.$window.lil.isUuid(uuid, 4);
         };
         NgRestAdapterService.prototype.getConfig = function () {
             return this.config;
@@ -148,8 +150,8 @@ var NgRestAdapter;
          * Initialise the service provider
          */
         function NgRestAdapterServiceProvider() {
-            this.$get = ['$http', function NgRestAdapterServiceFactory($http) {
-                    return new NgRestAdapter.NgRestAdapterService(this.config, $http);
+            this.$get = ['$http', '$window', function NgRestAdapterServiceFactory($http, $window) {
+                    return new NgRestAdapter.NgRestAdapterService(this.config, $http, $window);
                 }];
             //initialise service config
             this.config = {
