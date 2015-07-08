@@ -45,8 +45,6 @@ declare module NgRestAdapter {
         static $inject: string[];
         constructor($q: ng.IQService, $injector: ng.auto.IInjectorService);
         private getNgRestAdapterService;
-        request: (config: any) => any;
-        response: (response: any) => any;
         responseError: (rejection: ng.IHttpPromiseCallbackArg<any>) => any;
     }
 }
