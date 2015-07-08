@@ -12,11 +12,13 @@ module NgRestAdapter {
         remove(url:string, data?:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
 
         api(url:string):NgRestAdapter.NgRestAdapterService;
+        skipInterceptor():NgRestAdapter.NgRestAdapterService;
 
         uuid():string;
         isUuid(uuid:string):boolean;
 
         getConfig():INgRestAdapterServiceConfig;
+        getErrorHandler():IApiErrorHandler;
 
     }
 
@@ -30,7 +32,12 @@ module NgRestAdapter {
 
     export interface INgRestAdapterServiceConfig {
         baseUrl: string;
-        defaultHeaders: IHeaderConfig
+        defaultHeaders?: IHeaderConfig
+        skipInterceptor?: boolean;
+    }
+
+    export interface IApiErrorHandler {
+        (requestConfig:ng.IRequestConfig, responseObject:ng.IHttpPromiseCallbackArg<any>):void;
     }
 
 }

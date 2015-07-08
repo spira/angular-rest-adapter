@@ -11,13 +11,15 @@ let fixtures = {
             baseUrl: 'http://api.example.com/path/to/api/root',
             defaultHeaders: {
                 'Test-Header': 'This is a test header'
-            }
+            },
+            skipInterceptor: true
         };
     },
 
 };
 
 let $http:ng.IHttpService;
+let $q:ng.IQService;
 
 describe('Custom configuration', function () {
 
@@ -72,12 +74,13 @@ describe('Service tests', () => {
 
         module('ngRestAdapter');
 
-        inject((_$httpBackend_, _ngRestAdapter_, _$http_) => {
+        inject((_$httpBackend_, _ngRestAdapter_, _$http_, _$q_) => {
 
             if (!ngRestAdapterService){
                 $httpBackend = _$httpBackend_;
                 ngRestAdapterService = _ngRestAdapter_; //register injected service provider
                 $http = _$http_;
+                $q = _$q_;
             }
 
         });
@@ -269,6 +272,83 @@ describe('Service tests', () => {
 
         });
 
+
+    });
+
+    describe('Error interceptor', () => {
+
+
+        let spyMethod = sinon.spy();
+        let errorHandlerMock = (requestConfig:ng.IRequestConfig, responseObject:ng.IHttpPromiseCallbackArg<any>):void => {
+
+            spyMethod(requestConfig, responseObject); //spy on the options
+
+        };
+
+        it('should respond with error when no error handler is set', () => {
+            $httpBackend.expectGET('/api/any').respond(401);
+
+            let response  = ngRestAdapterService.get('/any'); //try to get a resource
+
+            $httpBackend.flush();
+
+            expect(spyMethod.called).to.be.false;
+            expect(response).eventually.to.be.rejected;
+        });
+
+        it('should be able to register an api error handler factory', () => {
+
+
+            //set credential promise factory
+            ngRestAdapterService.registerApiErrorHandler(errorHandlerMock);
+
+
+            expect(spyMethod.called).to.be.false;
+
+        });
+
+        it('should not be able to re-set the api error handler', () => {
+
+
+            let setFactoryFn = () => {
+                ngRestAdapterService.registerApiErrorHandler(errorHandlerMock);
+            };
+
+
+            expect(setFactoryFn).to.throw(NgRestAdapter.NgRestAdapterException);
+
+        });
+
+        it('should not call the api error handler when the api responds with a success', () => {
+            $httpBackend.expectGET('/api/any').respond(200);
+
+            ngRestAdapterService.get('/any'); //try to get a resource
+
+            $httpBackend.flush();
+
+            expect(spyMethod.called).to.be.false;
+        });
+
+        it('should call the api error handler when the api responds with an error', () => {
+            $httpBackend.expectGET('/api/any').respond(401);
+
+            ngRestAdapterService.get('/any'); //try to get a resource
+
+            $httpBackend.flush();
+
+            expect(spyMethod.called).to.be.true;
+        });
+
+        it('should not call the api error handler the api service specifies the interceptor should be skipped', () => {
+
+            $httpBackend.expectGET('/api/any').respond(401);
+
+            ngRestAdapterService.skipInterceptor().get('/any'); //try to get a resource
+
+            $httpBackend.flush();
+
+            expect(spyMethod.calledOnce).to.be.true;
+        });
 
     });
 

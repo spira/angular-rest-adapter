@@ -9,10 +9,10 @@ var NgRestAdapter;
             this.$q = $q;
             this.$injector = $injector;
             this.getNgRestAdapterService = function () {
-                if (_this.NgRestAdapterService == null) {
-                    _this.NgRestAdapterService = _this.$injector.get('ngRestAdapter');
+                if (_this.ngRestAdapter == null) {
+                    _this.ngRestAdapter = _this.$injector.get('ngRestAdapter');
                 }
-                return _this.NgRestAdapterService;
+                return _this.ngRestAdapter;
             };
             this.request = function (config) {
                 return config;
@@ -20,8 +20,22 @@ var NgRestAdapter;
             this.response = function (response) {
                 return response;
             };
-            this.responseError = function (response) {
-                return response;
+            this.responseError = function (rejection) {
+                var ngRestAdapter = _this.getNgRestAdapterService();
+                //@todo extend the ng.IHttpPromiseCallbackArg interface to stop having to override the ngRestAdapterServiceConfig.skipInterceptor typescript warning
+                if (rejection.config.ngRestAdapterServiceConfig.skipInterceptor === true) {
+                    return _this.$q.reject(rejection); //exit early
+                }
+                try {
+                    var errorHandler = ngRestAdapter.getErrorHandler();
+                    errorHandler(rejection.config, rejection);
+                }
+                catch (e) {
+                    if (!(e instanceof NgRestAdapter.NgRestAdapterErrorHandlerNotFoundException)) {
+                        throw e;
+                    }
+                }
+                return _this.$q.reject(rejection);
             };
         }
         /**
@@ -64,7 +78,8 @@ var NgRestAdapter;
                 method: method,
                 url: this.config.baseUrl + url,
                 headers: _.defaults(requestHeaders, defaultHeaders),
-                responseType: 'json' //it could always be json as even a head request might throw an exception as json
+                responseType: 'json',
+                ngRestAdapterServiceConfig: this.config
             };
             //if data is present, attach it to config
             if (!_.isEmpty(data)) {
@@ -102,6 +117,10 @@ var NgRestAdapter;
             var config = _.defaults({ baseUrl: url }, this.config);
             return new NgRestAdapterService(config, this.$http);
         };
+        NgRestAdapterService.prototype.skipInterceptor = function () {
+            var config = _.defaults({ skipInterceptor: true }, this.config);
+            return new NgRestAdapterService(config, this.$http);
+        };
         NgRestAdapterService.prototype.uuid = function () {
             return undefined;
         };
@@ -110,6 +129,19 @@ var NgRestAdapter;
         };
         NgRestAdapterService.prototype.getConfig = function () {
             return this.config;
+        };
+        NgRestAdapterService.prototype.registerApiErrorHandler = function (apiErrorHandler) {
+            if (_.isFunction(this.apiErrorHandler)) {
+                throw new NgRestAdapter.NgRestAdapterException("You cannot redeclare the credential promise factory");
+            }
+            this.apiErrorHandler = apiErrorHandler;
+            return this;
+        };
+        NgRestAdapterService.prototype.getErrorHandler = function () {
+            if (_.isFunction(this.apiErrorHandler)) {
+                return this.apiErrorHandler;
+            }
+            throw new NgRestAdapter.NgRestAdapterErrorHandlerNotFoundException("API Error handler is not set");
         };
         return NgRestAdapterService;
     })();
@@ -143,6 +175,14 @@ var NgRestAdapter;
         return NgRestAdapterException;
     })(Error);
     NgRestAdapter.NgRestAdapterException = NgRestAdapterException;
+    var NgRestAdapterErrorHandlerNotFoundException = (function (_super) {
+        __extends(NgRestAdapterErrorHandlerNotFoundException, _super);
+        function NgRestAdapterErrorHandlerNotFoundException() {
+            _super.apply(this, arguments);
+        }
+        return NgRestAdapterErrorHandlerNotFoundException;
+    })(NgRestAdapterException);
+    NgRestAdapter.NgRestAdapterErrorHandlerNotFoundException = NgRestAdapterErrorHandlerNotFoundException;
     var NgRestAdapterServiceProvider = (function () {
         /**
          * Initialise the service provider
@@ -157,6 +197,7 @@ var NgRestAdapter;
                 defaultHeaders: {
                     'Requested-With': 'NgRestAdapterException'
                 },
+                skipInterceptor: false
             };
         }
         /**
@@ -165,7 +206,7 @@ var NgRestAdapter;
          * @returns {NgRestAdapter.NgRestAdapterServiceProvider}
          */
         NgRestAdapterServiceProvider.prototype.configure = function (config) {
-            var mismatchedConfig = _.xor(_.keys(config), _.keys(this.config));
+            var mismatchedConfig = _.difference(_.keys(config), _.keys(this.config));
             if (mismatchedConfig.length > 0) {
                 throw new NgRestAdapterException("Invalid properties [" + mismatchedConfig.join(',') + "] passed to config)");
             }
