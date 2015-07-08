@@ -11,11 +11,9 @@ declare module NgRestAdapter {
         patch(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         remove(url: string, data?: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         api(url: string): NgRestAdapter.NgRestAdapterService;
-        skipInterceptor(): NgRestAdapter.NgRestAdapterService;
         uuid(): string;
         isUuid(uuid: string): boolean;
         getConfig(): INgRestAdapterServiceConfig;
-        getErrorHandler(): IApiErrorHandler;
     }
     interface INgRestAdapterServiceProvider {
         configure(config: INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
@@ -25,18 +23,14 @@ declare module NgRestAdapter {
     }
     interface INgRestAdapterServiceConfig {
         baseUrl: string;
-        defaultHeaders?: IHeaderConfig;
-        skipInterceptor?: boolean;
-    }
-    interface IApiErrorHandler {
-        (requestConfig: ng.IRequestConfig, responseObject: ng.IHttpPromiseCallbackArg<any>): void;
+        defaultHeaders: IHeaderConfig;
     }
 }
 declare module NgRestAdapter {
     class NgRestAdapterInterceptor {
         private $q;
         private $injector;
-        private ngRestAdapter;
+        private NgRestAdapterService;
         /**
          * Construct the service with dependencies injected
          * @param _$q
@@ -47,20 +41,21 @@ declare module NgRestAdapter {
         private getNgRestAdapterService;
         request: (config: any) => any;
         response: (response: any) => any;
-        responseError: (rejection: ng.IHttpPromiseCallbackArg<any>) => any;
+        responseError: (response: any) => any;
     }
 }
 declare module NgRestAdapter {
     class NgRestAdapterService implements INgRestAdapterService {
         private config;
         private $http;
-        private apiErrorHandler;
+        private uuid4;
         /**
          * Construct the service with dependencies injected
          * @param config
          * @param $http
+         * @param uuid4
          */
-        constructor(config: INgRestAdapterServiceConfig, $http: ng.IHttpService);
+        constructor(config: INgRestAdapterServiceConfig, $http: ng.IHttpService, uuid4: any);
         private sendRequest(method, url, requestHeaders?, data?, configOverrides?);
         options(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         get(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
@@ -70,12 +65,9 @@ declare module NgRestAdapter {
         patch(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         remove(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         api(url: string): NgRestAdapterService;
-        skipInterceptor(): NgRestAdapterService;
         uuid(): string;
         isUuid(uuid: string): boolean;
         getConfig(): NgRestAdapter.INgRestAdapterServiceConfig;
-        registerApiErrorHandler(apiErrorHandler: IApiErrorHandler): NgRestAdapterService;
-        getErrorHandler(): IApiErrorHandler;
     }
 }
 declare module NgRestAdapter {
@@ -90,8 +82,6 @@ declare module NgRestAdapter {
         constructor(message: string);
         toString(): string;
     }
-    class NgRestAdapterErrorHandlerNotFoundException extends NgRestAdapterException {
-    }
     class NgRestAdapterServiceProvider implements ng.IServiceProvider, INgRestAdapterServiceProvider {
         private config;
         /**
@@ -104,6 +94,6 @@ declare module NgRestAdapter {
          * @returns {NgRestAdapter.NgRestAdapterServiceProvider}
          */
         configure(config: INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
-        $get: (string | (($http: any) => NgRestAdapterService))[];
+        $get: (string | (($http: any, uuid4: any) => NgRestAdapterService))[];
     }
 }

@@ -352,5 +352,33 @@ describe('Service tests', () => {
 
     });
 
+    describe('UUID helper functions', () => {
+
+        it('should be able to retrieve a random uuid', () => {
+
+            let firstUuid = ngRestAdapterService.uuid();
+            let secondUuid = ngRestAdapterService.uuid();
+
+            expect(firstUuid).not.to.equal(secondUuid);
+            expect(firstUuid).to.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+
+        });
+
+        it('should be able to validate a uuid', () => {
+
+            let fixedUuidExample = '0d9c2c94-d24f-41bd-a89d-99d388def875';
+            let fixedInvalidUuidExample = 'not-a-uuid';
+            let valid = ngRestAdapterService.isUuid(fixedUuidExample);
+            let invalid = ngRestAdapterService.isUuid(fixedInvalidUuidExample);
+
+            expect(valid).to.be.true;
+            expect(invalid).not.to.be.true;
+
+        });
+
+
+
+    });
+
 
 });
