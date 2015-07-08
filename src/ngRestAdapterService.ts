@@ -97,7 +97,7 @@ module NgRestAdapter {
 
             let config = <INgRestAdapterServiceConfig>_.defaults({skipInterceptor:true}, this.config);
 
-            return new NgRestAdapterService(config, this.$http);
+            return new NgRestAdapterService(config, this.$http, this.uuid4);
 
         }
 

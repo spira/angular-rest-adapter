@@ -121,7 +121,7 @@ var NgRestAdapter;
         };
         NgRestAdapterService.prototype.skipInterceptor = function () {
             var config = _.defaults({ skipInterceptor: true }, this.config);
-            return new NgRestAdapterService(config, this.$http);
+            return new NgRestAdapterService(config, this.$http, this.uuid4);
         };
         NgRestAdapterService.prototype.uuid = function () {
             return this.uuid4.generate();

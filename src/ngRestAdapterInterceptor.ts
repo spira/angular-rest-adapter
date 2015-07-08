@@ -26,16 +26,6 @@ module NgRestAdapter {
             return this.ngRestAdapter;
         };
 
-        public request = (config):any => {
-
-            return config;
-        };
-
-        public response = (response):any => {
-
-            return response;
-        };
-
         public responseError = (rejection:ng.IHttpPromiseCallbackArg<any>):any => {
 
             let ngRestAdapter = this.getNgRestAdapterService();

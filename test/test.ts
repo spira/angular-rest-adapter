@@ -235,7 +235,6 @@ describe('Service tests', () => {
         it('should be able to override the $http config', () => {
 
             $httpBackend.expectGET('/api/any?foo=bar',  (headers) => {
-                console.log('headers', headers);
                 return headers['Accept'] == 'text/csv';
             }).respond(200);
             let responsePromise = ngRestAdapterService.get('/any', null, {
