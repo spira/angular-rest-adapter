@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./NgRestAdapterInterfaces.ts" />
+/// <reference path="./ngRestAdapterInterfaces.ts" />
 var NgRestAdapter;
 (function (NgRestAdapter) {
     var NgRestAdapterInterceptor = (function () {
@@ -36,7 +36,7 @@ var NgRestAdapter;
 })(NgRestAdapter || (NgRestAdapter = {}));
 /// <reference path="../typings/lodash/lodash.d.ts" />
 /// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="./NgRestAdapterInterfaces.ts" />
+/// <reference path="./ngRestAdapterInterfaces.ts" />
 var NgRestAdapter;
 (function (NgRestAdapter) {
     var NgRestAdapterService = (function () {
@@ -51,25 +51,53 @@ var NgRestAdapter;
             this.$q = $q;
             this.$http = $http;
         }
-        NgRestAdapterService.prototype.options = function (url, headers) {
+        NgRestAdapterService.prototype.sendRequest = function (method, url, requestHeaders, data, configOverrides) {
+            if (requestHeaders === void 0) { requestHeaders = {}; }
+            var defaultHeaders = {
+                'Content-Type': function (config) {
+                    if (config.data) {
+                        return 'application/json';
+                    }
+                    return null;
+                }
+            };
+            //set the default config
+            var requestConfig = {
+                method: method,
+                url: this.config.baseUrl + url,
+                headers: _.defaults(requestHeaders, defaultHeaders),
+                responseType: 'json' //it could always be json as even a head request might throw an exception as json
+            };
+            //if data is present, attach it to config
+            if (!_.isEmpty(data)) {
+                requestConfig.data = data;
+            }
+            //handle overrides
+            if (!_.isEmpty(configOverrides)) {
+                requestConfig = _.defaults(configOverrides, requestConfig);
+            }
+            var resultPromise = this.$http(requestConfig);
+            return resultPromise;
+        };
+        NgRestAdapterService.prototype.options = function (url, headers, configOverrides) {
             return undefined;
         };
-        NgRestAdapterService.prototype.get = function (url, headers) {
+        NgRestAdapterService.prototype.get = function (url, headers, configOverrides) {
+            return this.sendRequest('GET', url, headers, null, configOverrides);
+        };
+        NgRestAdapterService.prototype.head = function (url, headers, configOverrides) {
             return undefined;
         };
-        NgRestAdapterService.prototype.head = function (url, headers) {
+        NgRestAdapterService.prototype.put = function (url, data, headers, configOverrides) {
             return undefined;
         };
-        NgRestAdapterService.prototype.put = function (url, data, headers) {
+        NgRestAdapterService.prototype.post = function (url, data, headers, configOverrides) {
             return undefined;
         };
-        NgRestAdapterService.prototype.post = function (url, data, headers) {
+        NgRestAdapterService.prototype.patch = function (url, data, headers, configOverrides) {
             return undefined;
         };
-        NgRestAdapterService.prototype.patch = function (url, data, headers) {
-            return undefined;
-        };
-        NgRestAdapterService.prototype.remove = function (url, data, headers) {
+        NgRestAdapterService.prototype.remove = function (url, data, headers, configOverrides) {
             return undefined;
         };
         NgRestAdapterService.prototype.api = function (url) {
@@ -90,9 +118,9 @@ var NgRestAdapter;
 })(NgRestAdapter || (NgRestAdapter = {}));
 /// <reference path="../typings/lodash/lodash.d.ts" />
 /// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="./NgRestAdapterInterfaces.ts" />
-/// <reference path="./NgRestAdapterService.ts" />
-/// <reference path="./NgRestAdapterInterceptor.ts" />
+/// <reference path="./ngRestAdapterInterfaces.ts" />
+/// <reference path="./ngRestAdapterService.ts" />
+/// <reference path="./ngRestAdapterInterceptor.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }

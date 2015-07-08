@@ -3,13 +3,13 @@
 /// <reference path="../typings/angularjs/angular.d.ts" />
 declare module NgRestAdapter {
     interface INgRestAdapterService {
-        options(url: string, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        get(url: string, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        head(url: string, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        put(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        post(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        patch(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        remove(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
+        options(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        get(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        head(url: string, headers: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        put(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        post(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        patch(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        remove(url: string, data?: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         api(url: string): NgRestAdapter.NgRestAdapterService;
         uuid(): string;
         isUuid(uuid: string): boolean;
@@ -17,6 +17,9 @@ declare module NgRestAdapter {
     }
     interface INgRestAdapterServiceProvider {
         configure(config: INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
+    }
+    interface IHeaderConfig {
+        [index: string]: (config: ng.IRequestConfig) => string | string;
     }
     interface INgRestAdapterServiceConfig {
         baseUrl: string;
@@ -55,13 +58,14 @@ declare module NgRestAdapter {
          * @param $http
          */
         constructor(config: INgRestAdapterServiceConfig, $q: ng.IQService, $http: ng.IHttpService);
-        options(url: string, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        get(url: string, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        head(url: string, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        put(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        post(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        patch(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
-        remove(url: string, data: any, headers: ng.IHttpHeadersGetter): ng.IHttpPromise<any>;
+        private sendRequest(method, url, requestHeaders?, data?, configOverrides?);
+        options(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        get(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        head(url: string, headers: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        put(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        post(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        patch(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
+        remove(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         api(url: string): NgRestAdapter.NgRestAdapterService;
         uuid(): string;
         isUuid(uuid: string): boolean;

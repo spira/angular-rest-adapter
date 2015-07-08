@@ -1,6 +1,6 @@
 /// <reference path="../typings/lodash/lodash.d.ts" />
 /// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="./NgRestAdapterInterfaces.ts" />
+/// <reference path="./ngRestAdapterInterfaces.ts" />
 
 module NgRestAdapter {
 
