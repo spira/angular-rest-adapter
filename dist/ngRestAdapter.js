@@ -44,10 +44,12 @@ var NgRestAdapter;
          * Construct the service with dependencies injected
          * @param config
          * @param $http
+         * @param uuid4
          */
-        function NgRestAdapterService(config, $http) {
+        function NgRestAdapterService(config, $http, uuid4) {
             this.config = config;
             this.$http = $http;
+            this.uuid4 = uuid4;
         }
         NgRestAdapterService.prototype.sendRequest = function (method, url, requestHeaders, data, configOverrides) {
             if (requestHeaders === void 0) { requestHeaders = {}; }
@@ -100,13 +102,13 @@ var NgRestAdapter;
         };
         NgRestAdapterService.prototype.api = function (url) {
             var config = _.defaults({ baseUrl: url }, this.config);
-            return new NgRestAdapterService(config, this.$http);
+            return new NgRestAdapterService(config, this.$http, this.uuid4);
         };
         NgRestAdapterService.prototype.uuid = function () {
-            return undefined;
+            return this.uuid4.generate();
         };
         NgRestAdapterService.prototype.isUuid = function (uuid) {
-            return undefined;
+            return this.uuid4.validate(uuid);
         };
         NgRestAdapterService.prototype.getConfig = function () {
             return this.config;
@@ -148,8 +150,8 @@ var NgRestAdapter;
          * Initialise the service provider
          */
         function NgRestAdapterServiceProvider() {
-            this.$get = ['$http', function NgRestAdapterServiceFactory($http) {
-                    return new NgRestAdapter.NgRestAdapterService(this.config, $http);
+            this.$get = ['$http', 'uuid4', function NgRestAdapterServiceFactory($http, uuid4) {
+                    return new NgRestAdapter.NgRestAdapterService(this.config, $http, uuid4);
                 }];
             //initialise service config
             this.config = {
@@ -175,7 +177,7 @@ var NgRestAdapter;
         return NgRestAdapterServiceProvider;
     })();
     NgRestAdapter.NgRestAdapterServiceProvider = NgRestAdapterServiceProvider;
-    angular.module('ngRestAdapter', [])
+    angular.module('ngRestAdapter', ['uuid4'])
         .provider('ngRestAdapter', NgRestAdapterServiceProvider)
         .service('ngRestAdapterInterceptor', NgRestAdapter.NgRestAdapterInterceptor)
         .config(['$httpProvider', '$injector', function ($httpProvider) {
