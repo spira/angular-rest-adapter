@@ -43,12 +43,10 @@ var NgRestAdapter;
         /**
          * Construct the service with dependencies injected
          * @param config
-         * @param $q
          * @param $http
          */
-        function NgRestAdapterService(config, $q, $http) {
+        function NgRestAdapterService(config, $http) {
             this.config = config;
-            this.$q = $q;
             this.$http = $http;
         }
         NgRestAdapterService.prototype.sendRequest = function (method, url, requestHeaders, data, configOverrides) {
@@ -101,7 +99,8 @@ var NgRestAdapter;
             return this.sendRequest('DELETE', url, headers, data, configOverrides);
         };
         NgRestAdapterService.prototype.api = function (url) {
-            return undefined;
+            var config = _.defaults({ baseUrl: url }, this.config);
+            return new NgRestAdapterService(config, this.$http);
         };
         NgRestAdapterService.prototype.uuid = function () {
             return undefined;
@@ -149,8 +148,8 @@ var NgRestAdapter;
          * Initialise the service provider
          */
         function NgRestAdapterServiceProvider() {
-            this.$get = ['$q', '$http', function NgRestAdapterServiceFactory($q, $http) {
-                    return new NgRestAdapter.NgRestAdapterService(this.config, $q, $http);
+            this.$get = ['$http', function NgRestAdapterServiceFactory($http) {
+                    return new NgRestAdapter.NgRestAdapterService(this.config, $http);
                 }];
             //initialise service config
             this.config = {

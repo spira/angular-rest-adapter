@@ -9,12 +9,10 @@ module NgRestAdapter {
         /**
          * Construct the service with dependencies injected
          * @param config
-         * @param $q
          * @param $http
          */
         constructor(
             private config:INgRestAdapterServiceConfig,
-            private $q: ng.IQService,
             private $http: ng.IHttpService
         ) {
 
@@ -83,8 +81,11 @@ module NgRestAdapter {
             return this.sendRequest('DELETE', url, headers, data, configOverrides);
         }
 
-        public api(url:string):NgRestAdapter.NgRestAdapterService {
-            return undefined;
+        public api(url:string):NgRestAdapterService {
+
+            let config = <INgRestAdapterServiceConfig>_.defaults({baseUrl:url}, this.config);
+
+            return new NgRestAdapterService(config, this.$http);
         }
 
         public uuid():string {

@@ -61,8 +61,8 @@ module NgRestAdapter {
             return this;
         }
 
-        public $get = ['$q', '$http', function NgRestAdapterServiceFactory($q, $http) {
-            return new NgRestAdapterService(this.config, $q, $http);
+        public $get = ['$http', function NgRestAdapterServiceFactory($http) {
+            return new NgRestAdapterService(this.config, $http);
         }];
 
     }

@@ -250,6 +250,25 @@ describe('Service tests', () => {
 
         });
 
+        it('should be able to temporarily override the baseurl', () => {
+
+            let someOtherBase = seededChance.domain();
+            $httpBackend.expectGET('/api/any').respond('ok'); //the original base
+            $httpBackend.expectGET(someOtherBase+'/something-else').respond('ok'); //the new base
+            $httpBackend.expectGET('/api/any').respond('ok'); //the original base
+
+            let responseStandardApiPromiseBefore = ngRestAdapterService.get('/any');
+            let responseCustomApiPromise = ngRestAdapterService.api(someOtherBase).get('/something-else');
+            let responseStandardApiPromiseAfter = ngRestAdapterService.get('/any');
+
+            expect(responseStandardApiPromiseBefore).eventually.to.be.fulfilled;
+            expect(responseCustomApiPromise).eventually.to.be.fulfilled;
+            expect(responseStandardApiPromiseAfter).eventually.to.be.fulfilled;
+
+            $httpBackend.flush();
+
+        });
+
 
     });
 
