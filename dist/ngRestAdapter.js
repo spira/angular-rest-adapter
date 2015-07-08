@@ -10,7 +10,7 @@ var NgRestAdapter;
             this.$injector = $injector;
             this.getNgRestAdapterService = function () {
                 if (_this.NgRestAdapterService == null) {
-                    _this.NgRestAdapterService = _this.$injector.get('NgRestAdapter');
+                    _this.NgRestAdapterService = _this.$injector.get('ngRestAdapter');
                 }
                 return _this.NgRestAdapterService;
             };
@@ -80,25 +80,25 @@ var NgRestAdapter;
             return resultPromise;
         };
         NgRestAdapterService.prototype.options = function (url, headers, configOverrides) {
-            return undefined;
+            return this.sendRequest('OPTIONS', url, headers, null, configOverrides);
         };
         NgRestAdapterService.prototype.get = function (url, headers, configOverrides) {
             return this.sendRequest('GET', url, headers, null, configOverrides);
         };
         NgRestAdapterService.prototype.head = function (url, headers, configOverrides) {
-            return undefined;
+            return this.sendRequest('HEAD', url, headers, null, configOverrides);
         };
         NgRestAdapterService.prototype.put = function (url, data, headers, configOverrides) {
             return this.sendRequest('PUT', url, headers, data, configOverrides);
         };
         NgRestAdapterService.prototype.post = function (url, data, headers, configOverrides) {
-            return undefined;
+            return this.sendRequest('POST', url, headers, data, configOverrides);
         };
         NgRestAdapterService.prototype.patch = function (url, data, headers, configOverrides) {
-            return undefined;
+            return this.sendRequest('PATCH', url, headers, data, configOverrides);
         };
         NgRestAdapterService.prototype.remove = function (url, data, headers, configOverrides) {
-            return undefined;
+            return this.sendRequest('DELETE', url, headers, data, configOverrides);
         };
         NgRestAdapterService.prototype.api = function (url) {
             return undefined;

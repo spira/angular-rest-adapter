@@ -98,9 +98,14 @@ describe('Service tests', () => {
 
     });
 
-    describe('REST requests', () => {
+    describe('Aliased REST requests', () => {
 
-        it('should complete a GET request when called', () => {
+        let testData = {
+            name : seededChance.name,
+            email: seededChance.email,
+        };
+
+        it('should complete a  GET request when called', () => {
 
             $httpBackend.expectGET('/api/any').respond('ok');
 
@@ -111,6 +116,57 @@ describe('Service tests', () => {
             expect(responsePromise).eventually.to.be.instanceOf(Object);
 
         });
+
+        it('should complete a  HEAD request when called', () => {
+
+            $httpBackend.expectHEAD('/api/any').respond(200);
+            let responsePromise = ngRestAdapterService.head('/any');
+            $httpBackend.flush();
+            expect(responsePromise).eventually.to.be.fulfilled;
+        });
+
+        it('should complete an OPTIONS request when called', () => {
+
+            $httpBackend.expect('OPTIONS', '/api/any').respond(200);
+            let responsePromise = ngRestAdapterService.options('/any');
+            $httpBackend.flush();
+            expect(responsePromise).eventually.to.be.fulfilled;
+        });
+
+        it('should complete a  PUT request when called', () => {
+
+            $httpBackend.expectPUT('/api/any', testData).respond(200);
+            let responsePromise = ngRestAdapterService.put('/any', testData);
+            $httpBackend.flush();
+            expect(responsePromise).eventually.to.be.fulfilled;
+        });
+
+        it('should complete a  POST request when called', () => {
+
+            $httpBackend.expectPOST('/api/any', testData).respond(200);
+            let responsePromise = ngRestAdapterService.post('/any', testData);
+            $httpBackend.flush();
+            expect(responsePromise).eventually.to.be.fulfilled;
+        });
+
+        it('should complete a  PATCH request when called', () => {
+
+            $httpBackend.expectPATCH('/api/any', testData).respond(200);
+            let responsePromise = ngRestAdapterService.patch('/any', testData);
+            $httpBackend.flush();
+            expect(responsePromise).eventually.to.be.fulfilled;
+        });
+
+        it('should complete a  DELETE request when called', () => {
+
+            $httpBackend.expectDELETE('/api/any').respond(200);
+            let responsePromise = ngRestAdapterService.remove('/any', testData);
+            $httpBackend.flush();
+            expect(responsePromise).eventually.to.be.fulfilled;
+        });
+
+    });
+    describe('Headers', () => {
 
         it('should add custom headers to a request', () => {
 

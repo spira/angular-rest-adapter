@@ -21,7 +21,7 @@ module NgRestAdapter {
 
         private getNgRestAdapterService = (): NgRestAdapterService=> {
             if (this.NgRestAdapterService == null) {
-                this.NgRestAdapterService = this.$injector.get('NgRestAdapter');
+                this.NgRestAdapterService = this.$injector.get('ngRestAdapter');
             }
             return this.NgRestAdapterService;
         };

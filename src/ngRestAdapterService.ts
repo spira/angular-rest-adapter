@@ -56,15 +56,15 @@ module NgRestAdapter {
         }
 
         public options(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
-            return undefined;
+            return this.sendRequest('OPTIONS', url, headers, null, configOverrides);
         }
 
         public get(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return this.sendRequest('GET', url, headers, null, configOverrides);
         }
 
-        public head(url:string, headers:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
-            return undefined;
+        public head(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
+            return this.sendRequest('HEAD', url, headers, null, configOverrides);
         }
 
         public put(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
@@ -72,15 +72,15 @@ module NgRestAdapter {
         }
 
         public post(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
-            return undefined;
+            return this.sendRequest('POST', url, headers, data, configOverrides);
         }
 
         public patch(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
-            return undefined;
+            return this.sendRequest('PATCH', url, headers, data, configOverrides);
         }
 
         public remove(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
-            return undefined;
+            return this.sendRequest('DELETE', url, headers, data, configOverrides);
         }
 
         public api(url:string):NgRestAdapter.NgRestAdapterService {
