@@ -68,19 +68,26 @@ describe('Service tests', () => {
 
     let $httpBackend:ng.IHttpBackendService;
     let ngRestAdapterService:NgRestAdapter.NgRestAdapterService;
+    let $exceptionHandler;
 
 
     beforeEach(()=>{
 
         module('ngRestAdapter');
 
-        inject((_$httpBackend_, _ngRestAdapter_, _$http_, _$q_) => {
+
+        module(function($exceptionHandlerProvider) {
+            $exceptionHandlerProvider.mode('log');
+        });
+
+        inject((_$httpBackend_, _ngRestAdapter_, _$http_, _$q_, _$exceptionHandler_) => {
 
             if (!ngRestAdapterService){
                 $httpBackend = _$httpBackend_;
                 ngRestAdapterService = _ngRestAdapter_; //register injected service provider
                 $http = _$http_;
                 $q = _$q_;
+                $exceptionHandler = _$exceptionHandler_
             }
 
         });
@@ -277,10 +284,15 @@ describe('Service tests', () => {
     describe('Error interceptor', () => {
 
 
+        let throwException = false;
         let spyMethod = sinon.spy();
         let errorHandlerMock = (requestConfig:ng.IRequestConfig, responseObject:ng.IHttpPromiseCallbackArg<any>):void => {
 
             spyMethod(requestConfig, responseObject); //spy on the options
+
+            if (throwException){
+                throw Error("An error occurred!");
+            }
 
         };
 
@@ -347,6 +359,23 @@ describe('Service tests', () => {
             $httpBackend.flush();
 
             expect(spyMethod.calledOnce).to.be.true;
+        });
+
+        it('should not catch an exception thrown from an error interceptor if it is user supplied', () => {
+
+
+            $httpBackend.expectGET('/api/any').respond(500);
+            throwException = true; //make the error interceptor throw an error
+
+            ngRestAdapterService.get('/any'); //try to get a resource=
+
+            expect($exceptionHandler.errors).to.be.empty; //no errors initially
+
+            $httpBackend.flush();
+
+
+            expect($exceptionHandler.errors[0]).to.be.instanceOf(Error);
+
         });
 
     });

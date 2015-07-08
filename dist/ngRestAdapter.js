@@ -14,12 +14,6 @@ var NgRestAdapter;
                 }
                 return _this.ngRestAdapter;
             };
-            this.request = function (config) {
-                return config;
-            };
-            this.response = function (response) {
-                return response;
-            };
             this.responseError = function (rejection) {
                 var ngRestAdapter = _this.getNgRestAdapterService();
                 //@todo extend the ng.IHttpPromiseCallbackArg interface to stop having to override the ngRestAdapterServiceConfig.skipInterceptor typescript warning
