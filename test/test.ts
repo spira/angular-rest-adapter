@@ -65,7 +65,7 @@ describe('Custom configuration', function () {
 describe('Service tests', () => {
 
     let $httpBackend:ng.IHttpBackendService;
-    let NgRestAdapterService:NgRestAdapter.NgRestAdapterService;
+    let ngRestAdapterService:NgRestAdapter.NgRestAdapterService;
 
 
     beforeEach(()=>{
@@ -74,9 +74,9 @@ describe('Service tests', () => {
 
         inject((_$httpBackend_, _ngRestAdapter_, _$http_) => {
 
-            if (!NgRestAdapterService){
+            if (!ngRestAdapterService){
                 $httpBackend = _$httpBackend_;
-                NgRestAdapterService = _ngRestAdapter_; //register injected service provider
+                ngRestAdapterService = _ngRestAdapter_; //register injected service provider
                 $http = _$http_;
             }
 
@@ -93,10 +93,27 @@ describe('Service tests', () => {
 
         it('should be an injectable service', () => {
 
-            return expect(NgRestAdapterService).to.be.an('object');
+            return expect(ngRestAdapterService).to.be.an('object');
         });
 
     });
+
+    describe('REST requests', () => {
+
+        it('should complete a GET request when called', () => {
+
+            $httpBackend.expectGET('/api/any').respond('ok');
+
+            let responsePromise = ngRestAdapterService.get('/any');
+
+            $httpBackend.flush();
+
+            expect(responsePromise).eventually.to.be.instanceOf(Object);
+
+        });
+
+
+    })
 
 
 });

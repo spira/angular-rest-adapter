@@ -20,47 +20,82 @@ module NgRestAdapter {
 
         }
 
-        options(url:string, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any> {
+        private sendRequest(method:string, url:string, requestHeaders:IHeaderConfig = {}, data?:any, configOverrides?:ng.IRequestShortcutConfig) {
+
+            var defaultHeaders:IHeaderConfig = {
+                'Content-Type' : (config:ng.IRequestConfig) => {
+                    if (config.data){
+                        return 'application/json';
+                    }
+
+                    return null;
+                }
+            };
+
+            //set the default config
+            var requestConfig:ng.IRequestConfig = {
+                method: method,
+                url:  this.config.baseUrl + url,
+                headers: _.defaults(requestHeaders, defaultHeaders),
+                responseType: 'json' //it could always be json as even a head request might throw an exception as json
+            };
+
+            //if data is present, attach it to config
+            if (!_.isEmpty(data)){
+                requestConfig.data = data;
+            }
+
+            //handle overrides
+            if (!_.isEmpty(configOverrides)){
+                requestConfig = <ng.IRequestConfig>_.defaults(configOverrides, requestConfig);
+            }
+
+            var resultPromise = this.$http(requestConfig);
+
+            return resultPromise;
+        }
+
+        public options(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return undefined;
         }
 
-        get(url:string, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any> {
+        public get(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
+            return this.sendRequest('GET', url, headers, null, configOverrides);
+        }
+
+        public head(url:string, headers:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return undefined;
         }
 
-        head(url:string, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any> {
+        public put(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return undefined;
         }
 
-        put(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any> {
+        public post(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return undefined;
         }
 
-        post(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any> {
+        public patch(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return undefined;
         }
 
-        patch(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any> {
+        public remove(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return undefined;
         }
 
-        remove(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any> {
+        public api(url:string):NgRestAdapter.NgRestAdapterService {
             return undefined;
         }
 
-        api(url:string):NgRestAdapter.NgRestAdapterService {
+        public uuid():string {
             return undefined;
         }
 
-        uuid():string {
+        public isUuid(uuid:string):boolean {
             return undefined;
         }
 
-        isUuid(uuid:string):boolean {
-            return undefined;
-        }
-
-        getConfig():NgRestAdapter.INgRestAdapterServiceConfig {
+        public getConfig():NgRestAdapter.INgRestAdapterServiceConfig {
             return this.config;
         }
 

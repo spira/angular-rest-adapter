@@ -4,13 +4,13 @@ module NgRestAdapter {
 
     export interface INgRestAdapterService {
 
-        options(url:string, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any>;
-        get(url:string, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any>;
-        head(url:string, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any>;
-        put(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any>;
-        post(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any>;
-        patch(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any>;
-        remove(url:string, data:any, headers:ng.IHttpHeadersGetter):ng.IHttpPromise<any>;
+        options(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
+        get(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
+        head(url:string, headers:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
+        put(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
+        post(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
+        patch(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
+        remove(url:string, data?:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
 
         api(url:string):NgRestAdapter.NgRestAdapterService;
 
@@ -23,6 +23,10 @@ module NgRestAdapter {
 
     export interface INgRestAdapterServiceProvider {
         configure(config:INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
+    }
+
+    export interface IHeaderConfig {
+        [index: string] : (config:ng.IRequestConfig) => string | string;
     }
 
     export interface INgRestAdapterServiceConfig {
