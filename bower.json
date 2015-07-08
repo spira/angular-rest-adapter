@@ -1,8 +1,8 @@
 {
-  "name": "ng-jwt-auth",
+  "name": "angular-rest-adapter",
   "version": "0.0.0",
-  "description": "Angular JSON Web Token Authentication Module",
-  "main": "dist/NgRestAdapter.js",
+  "description": "Angular RESTful API service adapter",
+  "main": "dist/ngRestAdapter.js",
   "dependencies": {
     "lodash": "~3.9.3",
     "moment": "~2.10.3",

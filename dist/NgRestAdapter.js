@@ -155,4 +155,4 @@ var NgRestAdapter;
             $httpProvider.interceptors.push('ngRestAdapterInterceptor');
         }]);
 })(NgRestAdapter || (NgRestAdapter = {}));
-//# sourceMappingURL=NgRestAdapter.js.map
+//# sourceMappingURL=ngRestAdapter.js.map
