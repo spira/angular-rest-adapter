@@ -1,5 +1,5 @@
 # angular-rest-adapter
-Wrapper for https://github.com/victorbjelkholm/ngprogress - automatically handles http progress with interceptor
+$http adapter for easier connection to REST APIs 
 
 [![Build Status](https://travis-ci.org/spira/angular-rest-adapter.svg?branch=master)](https://travis-ci.org/spira/angular-rest-adapter) 
 [![Coverage Status](https://coveralls.io/repos/spira/angular-rest-adapter/badge.svg?branch=master)](https://coveralls.io/r/spira/angular-rest-adapter?branch=master)
@@ -40,5 +40,4 @@ angular.module('app', ['ngRestAdapter'])
 ```
 
 * ???
-* Profit! All outgoing http requests will start or bump the progress meter, when all pending requests are resolved, 
-the progress bar will complete.
+* Profit!
