@@ -1,0 +1,17 @@
+language: node_js
+node_js:
+  - "0.12"
+
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libnotify-bin
+
+install:
+  - travis_retry npm install -g gulp
+  - travis_retry npm install
+
+script:
+  - gulp test
+
+after_script:
+  - gulp coveralls
