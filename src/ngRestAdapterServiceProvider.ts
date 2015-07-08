@@ -61,14 +61,14 @@ module NgRestAdapter {
             return this;
         }
 
-        public $get = ['$http', '$window', function NgRestAdapterServiceFactory($http, $window) {
-            return new NgRestAdapterService(this.config, $http, $window);
+        public $get = ['$http', 'uuid4', function NgRestAdapterServiceFactory($http, uuid4) {
+            return new NgRestAdapterService(this.config, $http, uuid4);
         }];
 
     }
 
 
-    angular.module('ngRestAdapter', [])
+    angular.module('ngRestAdapter', ['uuid4'])
         .provider('ngRestAdapter', NgRestAdapterServiceProvider)
         .service('ngRestAdapterInterceptor', NgRestAdapterInterceptor)
         .config(['$httpProvider', '$injector', ($httpProvider:ng.IHttpProvider) => {
