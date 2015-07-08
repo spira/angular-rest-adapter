@@ -26,6 +26,8 @@ module NgRestAdapter {
         }
     }
 
+    export class NgRestAdapterErrorHandlerNotFoundException extends NgRestAdapterException {}
+
     export class NgRestAdapterServiceProvider implements ng.IServiceProvider, INgRestAdapterServiceProvider {
 
         private config: INgRestAdapterServiceConfig;
@@ -41,6 +43,7 @@ module NgRestAdapter {
                 defaultHeaders: {
                     'Requested-With': 'NgRestAdapterException'
                 },
+                skipInterceptor: false
             }
 
         }
@@ -52,7 +55,7 @@ module NgRestAdapter {
          */
         public configure(config:INgRestAdapterServiceConfig) : NgRestAdapterServiceProvider {
 
-            let mismatchedConfig = _.xor(_.keys(config), _.keys(this.config));
+            let mismatchedConfig = _.difference(_.keys(config), _.keys(this.config));
             if (mismatchedConfig.length > 0){
                 throw new NgRestAdapterException("Invalid properties ["+mismatchedConfig.join(',')+"] passed to config)");
             }

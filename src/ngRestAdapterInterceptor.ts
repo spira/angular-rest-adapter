@@ -5,7 +5,7 @@ module NgRestAdapter {
 
     export class NgRestAdapterInterceptor {
 
-        private NgRestAdapterService: NgRestAdapterService;
+        private ngRestAdapter: NgRestAdapterService;
 
 
         /**
@@ -20,25 +20,35 @@ module NgRestAdapter {
         }
 
         private getNgRestAdapterService = (): NgRestAdapterService=> {
-            if (this.NgRestAdapterService == null) {
-                this.NgRestAdapterService = this.$injector.get('ngRestAdapter');
+            if (this.ngRestAdapter == null) {
+                this.ngRestAdapter = this.$injector.get('ngRestAdapter');
             }
-            return this.NgRestAdapterService;
+            return this.ngRestAdapter;
         };
 
-        public request = (config):any => {
+        public responseError = (rejection:ng.IHttpPromiseCallbackArg<any>):any => {
 
-            return config;
-        };
+            let ngRestAdapter = this.getNgRestAdapterService();
 
-        public response = (response):any => {
+            //@todo extend the ng.IHttpPromiseCallbackArg interface to stop having to override the ngRestAdapterServiceConfig.skipInterceptor typescript warning
+            if ((<any>rejection.config).ngRestAdapterServiceConfig.skipInterceptor === true){
+                return this.$q.reject(rejection); //exit early
+            }
 
-            return response;
-        };
+            try {
 
-        public responseError = (response):any => {
+                let errorHandler = ngRestAdapter.getErrorHandler();
 
-            return response;
+                errorHandler(rejection.config, rejection);
+
+            }catch(e){
+                if (! (e instanceof NgRestAdapterErrorHandlerNotFoundException)){
+                    throw e;
+                }
+                //otherwise do nothing, the developer has not set their own error handler
+            }
+
+            return this.$q.reject(rejection);
         };
 
     }

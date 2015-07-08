@@ -6,6 +6,8 @@ module NgRestAdapter {
 
     export class NgRestAdapterService implements INgRestAdapterService {
 
+        private apiErrorHandler;
+
         /**
          * Construct the service with dependencies injected
          * @param config
@@ -37,7 +39,8 @@ module NgRestAdapter {
                 method: method,
                 url:  this.config.baseUrl + url,
                 headers: _.defaults(requestHeaders, defaultHeaders),
-                responseType: 'json' //it could always be json as even a head request might throw an exception as json
+                responseType: 'json', //it could always be json as even a head request might throw an exception as json
+                ngRestAdapterServiceConfig: this.config
             };
 
             //if data is present, attach it to config
@@ -90,6 +93,14 @@ module NgRestAdapter {
             return new NgRestAdapterService(config, this.$http, this.uuid4);
         }
 
+        public skipInterceptor():NgRestAdapterService {
+
+            let config = <INgRestAdapterServiceConfig>_.defaults({skipInterceptor:true}, this.config);
+
+            return new NgRestAdapterService(config, this.$http, this.uuid4);
+
+        }
+
         public uuid():string {
             return <string>this.uuid4.generate();
         }
@@ -100,6 +111,25 @@ module NgRestAdapter {
 
         public getConfig():NgRestAdapter.INgRestAdapterServiceConfig {
             return this.config;
+        }
+
+        public registerApiErrorHandler(apiErrorHandler:IApiErrorHandler):NgRestAdapterService {
+            if (_.isFunction(this.apiErrorHandler)){
+                throw new NgRestAdapterException("You cannot redeclare the credential promise factory");
+            }
+            this.apiErrorHandler = apiErrorHandler;
+
+            return this;
+        }
+
+        public getErrorHandler():IApiErrorHandler{
+
+            if (_.isFunction(this.apiErrorHandler)){
+
+                return this.apiErrorHandler;
+            }
+
+            throw new NgRestAdapterErrorHandlerNotFoundException("API Error handler is not set");
         }
 
     }
