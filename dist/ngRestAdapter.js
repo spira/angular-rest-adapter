@@ -89,7 +89,7 @@ var NgRestAdapter;
             return undefined;
         };
         NgRestAdapterService.prototype.put = function (url, data, headers, configOverrides) {
-            return undefined;
+            return this.sendRequest('PUT', url, headers, data, configOverrides);
         };
         NgRestAdapterService.prototype.post = function (url, data, headers, configOverrides) {
             return undefined;

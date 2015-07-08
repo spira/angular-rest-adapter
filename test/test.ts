@@ -3,7 +3,7 @@
 
 
 let expect = chai.expect;
-
+let seededChance = new Chance(1);
 let fixtures = {
 
     get customConfig():NgRestAdapter.INgRestAdapterServiceConfig{
@@ -111,6 +111,61 @@ describe('Service tests', () => {
             expect(responsePromise).eventually.to.be.instanceOf(Object);
 
         });
+
+        it('should add custom headers to a request', () => {
+
+            let testHeaders = {
+                key1: 'Test-Header1',
+                value1: 'test value 1',
+                key2: 'Test-Header2',
+                value2: 'test value 2',
+                key3: 'test value 3',
+                value3: 'test value 3',
+            };
+
+            $httpBackend.expectGET('/api/any', (headers) => {
+
+                return headers[testHeaders.key1] === testHeaders.value1 //basic string assignment check
+                    && headers[testHeaders.key2] === testHeaders.value2 //function assignment check
+                    && !headers[testHeaders.key3] //function returning null check
+                ;
+            }).respond('ok');
+
+            let responsePromise = ngRestAdapterService.get('/any', {
+                [testHeaders.key1] : testHeaders.value1,
+                [testHeaders.key2] : () => {
+                    return testHeaders.value2;
+                },
+                [testHeaders.key3] : () => {
+                    return null;
+                }
+            });
+
+            $httpBackend.flush();
+
+            expect(responsePromise).eventually.to.be.fulfilled;
+
+        });
+
+        it('should have `Content-Type` header when data is provided', () => {
+
+            let data = {
+                name : seededChance.name,
+                email: seededChance.email,
+            };
+
+            $httpBackend.expectPUT('/api/any', data, (headers) => {
+                return headers['Content-Type'] === 'application/json';
+            }).respond('ok');
+
+            let responsePromise = ngRestAdapterService.put('/any', data);
+
+            $httpBackend.flush();
+
+            expect(responsePromise).eventually.to.be.fulfilled;
+
+        })
+
 
 
     })

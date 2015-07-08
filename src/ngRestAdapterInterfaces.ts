@@ -26,14 +26,12 @@ module NgRestAdapter {
     }
 
     export interface IHeaderConfig {
-        [index: string] : (config:ng.IRequestConfig) => string | string;
+        [index: string] : any //should be `string | (config:ng.IRequestConfig) => string;` but union types are not yet allowed see https://github.com/Microsoft/TypeScript/issues/805
     }
 
     export interface INgRestAdapterServiceConfig {
         baseUrl: string;
-        defaultHeaders: {
-            [header: string] : string;
-        }
+        defaultHeaders: IHeaderConfig
     }
 
 }

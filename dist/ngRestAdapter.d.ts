@@ -19,13 +19,11 @@ declare module NgRestAdapter {
         configure(config: INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
     }
     interface IHeaderConfig {
-        [index: string]: (config: ng.IRequestConfig) => string | string;
+        [index: string]: any;
     }
     interface INgRestAdapterServiceConfig {
         baseUrl: string;
-        defaultHeaders: {
-            [header: string]: string;
-        };
+        defaultHeaders: IHeaderConfig;
     }
 }
 declare module NgRestAdapter {

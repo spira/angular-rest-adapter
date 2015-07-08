@@ -68,7 +68,7 @@ module NgRestAdapter {
         }
 
         public put(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
-            return undefined;
+            return this.sendRequest('PUT', url, headers, data, configOverrides);
         }
 
         public post(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
