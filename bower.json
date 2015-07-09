@@ -3,6 +3,9 @@
   "version": "1.0.2",
   "description": "Angular RESTful API service adapter",
   "main": "dist/ngRestAdapter.js",
+  "typescript": {
+    "definition": "dist/ngRestAdapter.d.ts"
+  },
   "dependencies": {
     "lodash": "~3.9.3",
     "moment": "~2.10.3",
