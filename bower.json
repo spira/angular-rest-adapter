@@ -1,6 +1,6 @@
 {
   "name": "angular-rest-adapter",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Angular RESTful API service adapter",
   "main": "dist/ngRestAdapter.js",
   "typescript": {
