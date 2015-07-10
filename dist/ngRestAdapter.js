@@ -1,6 +1,4 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./ngRestAdapterInterfaces.ts" />
 var NgRestAdapter;
 (function (NgRestAdapter) {
     var NgRestAdapterInterceptor = (function () {
@@ -42,9 +40,8 @@ var NgRestAdapter;
     })();
     NgRestAdapter.NgRestAdapterInterceptor = NgRestAdapterInterceptor;
 })(NgRestAdapter || (NgRestAdapter = {}));
-/// <reference path="../typings/lodash/lodash.d.ts" />
-/// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="./ngRestAdapterInterfaces.ts" />
+/// <reference path="../typings/tsd.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 var NgRestAdapter;
 (function (NgRestAdapter) {
     var NgRestAdapterService = (function () {
@@ -143,11 +140,7 @@ var NgRestAdapter;
     })();
     NgRestAdapter.NgRestAdapterService = NgRestAdapterService;
 })(NgRestAdapter || (NgRestAdapter = {}));
-/// <reference path="../typings/lodash/lodash.d.ts" />
-/// <reference path="../typings/angularjs/angular.d.ts" />
-/// <reference path="./ngRestAdapterInterfaces.ts" />
-/// <reference path="./ngRestAdapterService.ts" />
-/// <reference path="./ngRestAdapterInterceptor.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }

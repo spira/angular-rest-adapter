@@ -1,5 +1,4 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="./ngRestAdapterInterfaces.ts" />
 
 module NgRestAdapter {
 

@@ -1,6 +1,20 @@
 /// <reference path="../typings/tsd.d.ts" />
-/// <reference path="../typings/lodash/lodash.d.ts" />
-/// <reference path="../typings/angularjs/angular.d.ts" />
+declare module NgRestAdapter {
+    class NgRestAdapterInterceptor {
+        private $q;
+        private $injector;
+        private ngRestAdapter;
+        /**
+         * Construct the service with dependencies injected
+         * @param _$q
+         * @param _$injector
+         */
+        static $inject: string[];
+        constructor($q: ng.IQService, $injector: ng.auto.IInjectorService);
+        private getNgRestAdapterService;
+        responseError: (rejection: ng.IHttpPromiseCallbackArg<any>) => any;
+    }
+}
 declare module NgRestAdapter {
     interface INgRestAdapterService {
         options(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
@@ -30,22 +44,6 @@ declare module NgRestAdapter {
     }
     interface IApiErrorHandler {
         (requestConfig: ng.IRequestConfig, responseObject: ng.IHttpPromiseCallbackArg<any>): void;
-    }
-}
-declare module NgRestAdapter {
-    class NgRestAdapterInterceptor {
-        private $q;
-        private $injector;
-        private ngRestAdapter;
-        /**
-         * Construct the service with dependencies injected
-         * @param _$q
-         * @param _$injector
-         */
-        static $inject: string[];
-        constructor($q: ng.IQService, $injector: ng.auto.IInjectorService);
-        private getNgRestAdapterService;
-        responseError: (rejection: ng.IHttpPromiseCallbackArg<any>) => any;
     }
 }
 declare module NgRestAdapter {
