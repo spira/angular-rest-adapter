@@ -37,7 +37,7 @@ module NgRestAdapter {
             this.config = {
                 baseUrl: '/api',
                 defaultHeaders: {
-                    'Requested-With': 'NgRestAdapterException'
+                    'Requested-With': 'angular-rest-adapter''
                 },
                 skipInterceptor: false
             }
