@@ -24,7 +24,7 @@ module NgRestAdapter {
 
             var defaultHeaders:IHeaderConfig = {
                 'Content-Type' : (config:ng.IRequestConfig) => {
-                    if (config.data){
+                    if (data || (config && config.data)){
                         return 'application/json';
                     }
 
