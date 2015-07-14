@@ -60,7 +60,7 @@ var NgRestAdapter;
             if (requestHeaders === void 0) { requestHeaders = {}; }
             var defaultHeaders = {
                 'Content-Type': function (config) {
-                    if (config.data) {
+                    if (data || (config && config.data)) {
                         return 'application/json';
                     }
                     return null;
@@ -184,7 +184,7 @@ var NgRestAdapter;
             this.config = {
                 baseUrl: '/api',
                 defaultHeaders: {
-                    'Requested-With': 'NgRestAdapterException'
+                    'Requested-With': 'angular-rest-adapter'
                 },
                 skipInterceptor: false
             };
