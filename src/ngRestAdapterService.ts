@@ -4,7 +4,8 @@ module NgRestAdapter {
 
     export class NgRestAdapterService implements INgRestAdapterService {
 
-        private apiErrorHandler;
+        private apiErrorHandler:IApiErrorHandler;
+        private skipInterceptorRoutes:Array<RegExp|string>;
 
         /**
          * Construct the service with dependencies injected
@@ -128,6 +129,18 @@ module NgRestAdapter {
             }
 
             throw new NgRestAdapterErrorHandlerNotFoundException("API Error handler is not set");
+        }
+
+        public getSkipInterceptorRoutes():Array<RegExp|string>{
+            return this.skipInterceptorRoutes;
+        }
+
+
+        public setSkipInterceptorRoutes(excludedRoutes:Array<RegExp|string>):NgRestAdapter.NgRestAdapterService {
+
+            this.skipInterceptorRoutes = excludedRoutes;
+
+            return this;
         }
 
     }

@@ -410,12 +410,19 @@ describe('Service tests', () => {
 
     describe('Base $http usage', () => {
 
+        let spiedHandler;
         beforeEach(() => {
 
             $exceptionHandler.errors = []; //clear errors
+
         });
 
         it('should allow the $http service to be used as normal (success)', () => {
+
+            (<any>ngRestAdapterService).apiErrorHandler = null; //unset the error handler (normally not allowed)
+
+            spiedHandler = sinon.spy(); //spy on (private) error handler
+            ngRestAdapterService.registerApiErrorHandler(spiedHandler);
 
             $httpBackend.expectGET('/any').respond('ok'); //the original base
 
@@ -429,7 +436,45 @@ describe('Service tests', () => {
 
         });
 
-        it('should allow the $http service to be used as normal (error)', () => {
+        it ('should be able to set interceptor routes', () => {
+
+            let routeRegex = /\/excluded\/regex.*/;
+            let stringMatch = '/excluded/string/example';
+
+            ngRestAdapterService.setSkipInterceptorRoutes([routeRegex, stringMatch]);
+
+            expect(ngRestAdapterService.getSkipInterceptorRoutes()[0]).to.equal(routeRegex);
+            expect(ngRestAdapterService.getSkipInterceptorRoutes()[1]).to.equal(stringMatch);
+
+        });
+
+        it('should not intercept excluded (by regex) domains', () => {
+
+            $httpBackend.expectGET('/excluded/regex/example').respond(500, 'error');
+
+            let httpPromise = $http.get('/excluded/regex/example');
+
+            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error');
+
+            $httpBackend.flush();
+
+            expect(spiedHandler).not.to.have.been.called;
+        });
+
+        it('should not intercept excluded (by string match) domains', () => {
+
+            $httpBackend.expectGET('/excluded/string/example').respond(500, 'error');
+
+            let httpPromise = $http.get('/excluded/string/example');
+
+            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error');
+
+            $httpBackend.flush();
+
+            expect(spiedHandler).not.to.have.been.called;
+        });
+
+        it('should allow the $http service to be used as normal (error intercepted)', () => {
 
 
             $httpBackend.expectGET('/any').respond(500, 'error'); //the original base
@@ -440,9 +485,11 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
+            expect(spiedHandler).to.have.been.calledOnce; //interceptor should have been called
+
             expect($exceptionHandler.errors).to.be.empty; //no errors after the fact
 
-        })
+        });
 
     });
 

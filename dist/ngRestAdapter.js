@@ -18,6 +18,21 @@ var NgRestAdapter;
                 if (skipInterceptor === true) {
                     return _this.$q.reject(rejection); //exit early
                 }
+                var skipInterceptorRoutes = ngRestAdapter.getSkipInterceptorRoutes();
+                var routeUrl = rejection.config.url;
+                if (!_.isEmpty(skipInterceptorRoutes)) {
+                    var routeMatches = _.any(skipInterceptorRoutes, function (routeMatch) {
+                        if (_.isRegExp(routeMatch)) {
+                            return routeMatch.test(routeUrl);
+                        }
+                        else {
+                            return routeMatch === routeUrl;
+                        }
+                    });
+                    if (routeMatches) {
+                        return _this.$q.reject(rejection); //exit early
+                    }
+                }
                 try {
                     var errorHandler = ngRestAdapter.getErrorHandler();
                     errorHandler(rejection.config, rejection);
@@ -135,6 +150,13 @@ var NgRestAdapter;
                 return this.apiErrorHandler;
             }
             throw new NgRestAdapter.NgRestAdapterErrorHandlerNotFoundException("API Error handler is not set");
+        };
+        NgRestAdapterService.prototype.getSkipInterceptorRoutes = function () {
+            return this.skipInterceptorRoutes;
+        };
+        NgRestAdapterService.prototype.setSkipInterceptorRoutes = function (excludedRoutes) {
+            this.skipInterceptorRoutes = excludedRoutes;
+            return this;
         };
         return NgRestAdapterService;
     })();

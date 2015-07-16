@@ -28,11 +28,31 @@ module NgRestAdapter {
         public responseError = (rejection:ng.IHttpPromiseCallbackArg<any>):any => {
 
             let ngRestAdapter = this.getNgRestAdapterService();
-
+            
             let skipInterceptor = _.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor', false);
 
             if (skipInterceptor === true){
                 return this.$q.reject(rejection); //exit early
+            }
+
+            let skipInterceptorRoutes = ngRestAdapter.getSkipInterceptorRoutes();
+            let routeUrl = rejection.config.url;
+            if (!_.isEmpty(skipInterceptorRoutes)){
+
+                let routeMatches = _.any(skipInterceptorRoutes, (routeMatch:RegExp|string) => {
+
+                    if (_.isRegExp(routeMatch)){
+                        return (<RegExp>routeMatch).test(routeUrl);
+                    }else{
+                        return routeMatch === routeUrl;
+                    }
+
+                });
+
+                if (routeMatches){
+                    return this.$q.reject(rejection); //exit early
+                }
+
             }
 
             try {
