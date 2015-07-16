@@ -13,6 +13,7 @@ module NgRestAdapter {
 
         api(url:string):NgRestAdapter.NgRestAdapterService;
         skipInterceptor():NgRestAdapter.NgRestAdapterService;
+        setSkipInterceptorRoutes(excludedRoutes:RegExp[]):NgRestAdapter.NgRestAdapterService;
 
         uuid():string;
         isUuid(uuid:string):boolean;

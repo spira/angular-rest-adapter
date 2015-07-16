@@ -130,6 +130,14 @@ module NgRestAdapter {
             throw new NgRestAdapterErrorHandlerNotFoundException("API Error handler is not set");
         }
 
+
+        public setSkipInterceptorRoutes(excludedRoutes:RegExp[]):NgRestAdapter.NgRestAdapterService {
+
+
+
+            return this;
+        }
+
     }
 
 }

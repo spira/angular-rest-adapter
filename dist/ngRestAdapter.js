@@ -136,6 +136,9 @@ var NgRestAdapter;
             }
             throw new NgRestAdapter.NgRestAdapterErrorHandlerNotFoundException("API Error handler is not set");
         };
+        NgRestAdapterService.prototype.setSkipInterceptorRoutes = function (excludedRoutes) {
+            return this;
+        };
         return NgRestAdapterService;
     })();
     NgRestAdapter.NgRestAdapterService = NgRestAdapterService;

@@ -26,6 +26,7 @@ declare module NgRestAdapter {
         remove(url: string, data?: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         api(url: string): NgRestAdapter.NgRestAdapterService;
         skipInterceptor(): NgRestAdapter.NgRestAdapterService;
+        setSkipInterceptorRoutes(excludedRoutes: RegExp[]): NgRestAdapter.NgRestAdapterService;
         uuid(): string;
         isUuid(uuid: string): boolean;
         getConfig(): INgRestAdapterServiceConfig;
@@ -74,6 +75,7 @@ declare module NgRestAdapter {
         getConfig(): NgRestAdapter.INgRestAdapterServiceConfig;
         registerApiErrorHandler(apiErrorHandler: IApiErrorHandler): NgRestAdapterService;
         getErrorHandler(): IApiErrorHandler;
+        setSkipInterceptorRoutes(excludedRoutes: RegExp[]): NgRestAdapter.NgRestAdapterService;
     }
 }
 declare module NgRestAdapter {

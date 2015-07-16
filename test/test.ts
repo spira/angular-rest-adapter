@@ -408,14 +408,20 @@ describe('Service tests', () => {
 
     });
 
-    describe('Base $http usage', () => {
+    describe.only('Base $http usage', () => {
 
+        let spiedHandler;
         beforeEach(() => {
 
             $exceptionHandler.errors = []; //clear errors
+
         });
 
         it('should allow the $http service to be used as normal (success)', () => {
+
+
+            spiedHandler = sinon.spy(); //spy on (private) error handler
+            ngRestAdapterService.registerApiErrorHandler(spiedHandler);
 
             $httpBackend.expectGET('/any').respond('ok'); //the original base
 
@@ -440,9 +446,28 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
+            expect(spiedHandler).to.have.been.called; //interceptor should have been called
+
             expect($exceptionHandler.errors).to.be.empty; //no errors after the fact
 
-        })
+        });
+
+        it('should not intercept excluded domains', () => {
+
+            $httpBackend.expectGET('/excluded/path/example').respond(500, 'error');
+
+            ngRestAdapterService.setSkipInterceptorRoutes([
+                /\/excluded\/path.*/
+            ]);
+
+            let httpPromise = $http.get('/excluded/path/example');
+
+            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error');
+
+            $httpBackend.flush();
+
+            expect(spiedHandler).not.to.have.been.called;
+        });
 
     });
 
