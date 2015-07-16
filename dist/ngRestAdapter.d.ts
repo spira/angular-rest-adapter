@@ -27,6 +27,7 @@ declare module NgRestAdapter {
         api(url: string): NgRestAdapter.NgRestAdapterService;
         skipInterceptor(): NgRestAdapter.NgRestAdapterService;
         setSkipInterceptorRoutes(excludedRoutes: RegExp[]): NgRestAdapter.NgRestAdapterService;
+        getSkipInterceptorRoutes(): Array<RegExp | string>;
         uuid(): string;
         isUuid(uuid: string): boolean;
         getConfig(): INgRestAdapterServiceConfig;
@@ -53,6 +54,7 @@ declare module NgRestAdapter {
         private $http;
         private uuid4;
         private apiErrorHandler;
+        private skipInterceptorRoutes;
         /**
          * Construct the service with dependencies injected
          * @param config
@@ -75,7 +77,8 @@ declare module NgRestAdapter {
         getConfig(): NgRestAdapter.INgRestAdapterServiceConfig;
         registerApiErrorHandler(apiErrorHandler: IApiErrorHandler): NgRestAdapterService;
         getErrorHandler(): IApiErrorHandler;
-        setSkipInterceptorRoutes(excludedRoutes: RegExp[]): NgRestAdapter.NgRestAdapterService;
+        getSkipInterceptorRoutes(): Array<RegExp | string>;
+        setSkipInterceptorRoutes(excludedRoutes: Array<RegExp | string>): NgRestAdapter.NgRestAdapterService;
     }
 }
 declare module NgRestAdapter {

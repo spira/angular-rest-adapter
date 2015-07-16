@@ -14,6 +14,7 @@ module NgRestAdapter {
         api(url:string):NgRestAdapter.NgRestAdapterService;
         skipInterceptor():NgRestAdapter.NgRestAdapterService;
         setSkipInterceptorRoutes(excludedRoutes:RegExp[]):NgRestAdapter.NgRestAdapterService;
+        getSkipInterceptorRoutes():Array<RegExp|string>;
 
         uuid():string;
         isUuid(uuid:string):boolean;
