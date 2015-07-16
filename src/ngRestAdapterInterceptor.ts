@@ -29,8 +29,9 @@ module NgRestAdapter {
 
             let ngRestAdapter = this.getNgRestAdapterService();
 
-            //@todo extend the ng.IHttpPromiseCallbackArg interface to stop having to override the ngRestAdapterServiceConfig.skipInterceptor typescript warning
-            if ((<any>rejection.config).ngRestAdapterServiceConfig.skipInterceptor === true){
+            let skipInterceptor = _.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor', false);
+
+            if (skipInterceptor === true){
                 return this.$q.reject(rejection); //exit early
             }
 
