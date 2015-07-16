@@ -14,8 +14,8 @@ var NgRestAdapter;
             };
             this.responseError = function (rejection) {
                 var ngRestAdapter = _this.getNgRestAdapterService();
-                //@todo extend the ng.IHttpPromiseCallbackArg interface to stop having to override the ngRestAdapterServiceConfig.skipInterceptor typescript warning
-                if (rejection.config.ngRestAdapterServiceConfig.skipInterceptor === true) {
+                var skipInterceptor = _.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor', false);
+                if (skipInterceptor === true) {
                     return _this.$q.reject(rejection); //exit early
                 }
                 try {

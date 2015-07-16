@@ -408,5 +408,44 @@ describe('Service tests', () => {
 
     });
 
+    describe('Base $http usage', () => {
+
+        beforeEach(() => {
+
+            $exceptionHandler.errors = []; //clear errors
+        });
+
+        it('should allow the $http service to be used as normal (success)', () => {
+
+            $httpBackend.expectGET('/any').respond('ok'); //the original base
+
+            let httpPromise = $http.get('/any');
+
+            expect(httpPromise).eventually.to.be.fulfilled.and.have.deep.property('data', 'ok');
+
+            $httpBackend.flush();
+
+            expect($exceptionHandler.errors).to.be.empty; //no errors initially
+
+        });
+
+        it('should allow the $http service to be used as normal (error)', () => {
+
+
+            $httpBackend.expectGET('/any').respond(500, 'error'); //the original base
+
+            let httpPromise = $http.get('/any');
+
+            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error');
+
+            $httpBackend.flush();
+
+            expect($exceptionHandler.errors).to.be.empty; //no errors after the fact
+
+        })
+
+    });
+
+
 
 });
