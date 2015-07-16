@@ -1,6 +1,6 @@
 {
   "name": "angular-rest-adapter",
-  "version": "1.0.11",
+  "version": "1.1.0",
   "description": "Angular HTTP Site Progress Reporter",
   "main": "dist/ngRestAdapter.js",
   "scripts": {
