@@ -81,7 +81,7 @@ module NgRestAdapter {
             return this.sendRequest('PATCH', url, headers, data, configOverrides);
         }
 
-        public remove(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
+        public remove(url:string, data?:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
             return this.sendRequest('DELETE', url, headers, data, configOverrides);
         }
 
