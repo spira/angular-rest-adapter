@@ -12,7 +12,7 @@ let fixtures = {
             defaultHeaders: {
                 'Test-Header': 'This is a test header'
             },
-            skipInterceptor: true
+            skipInterceptor: () => false
         };
     },
 
@@ -57,7 +57,8 @@ describe('Custom configuration', function () {
 
         let configuration = customRestAdapter.getConfig();
 
-        return expect(configuration).to.deep.equal(fixtures.customConfig);
+        expect(configuration.baseUrl).to.equal(fixtures.customConfig.baseUrl);
+        expect(configuration.defaultHeaders).to.deep.equal(fixtures.customConfig.defaultHeaders);
 
     });
 
@@ -285,10 +286,10 @@ describe('Service tests', () => {
 
 
         let throwException = false;
-        let spyMethod = sinon.spy();
+        let errorHandlerSpy = sinon.spy();
         let errorHandlerMock = (requestConfig:ng.IRequestConfig, responseObject:ng.IHttpPromiseCallbackArg<any>):void => {
 
-            spyMethod(requestConfig, responseObject); //spy on the options
+            errorHandlerSpy(requestConfig, responseObject); //spy on the options
 
             if (throwException){
                 throw Error("An error occurred!");
@@ -303,7 +304,7 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
-            expect(spyMethod.called).to.be.false;
+            expect(errorHandlerSpy.called).to.be.false;
             expect(response).eventually.to.be.rejected;
         });
 
@@ -314,7 +315,7 @@ describe('Service tests', () => {
             ngRestAdapterService.registerApiErrorHandler(errorHandlerMock);
 
 
-            expect(spyMethod.called).to.be.false;
+            expect(errorHandlerSpy.called).to.be.false;
 
         });
 
@@ -337,7 +338,7 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
-            expect(spyMethod.called).to.be.false;
+            expect(errorHandlerSpy).not.to.be.called;
         });
 
         it('should call the api error handler when the api responds with an error', () => {
@@ -347,7 +348,7 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
-            expect(spyMethod.called).to.be.true;
+            expect(errorHandlerSpy).to.be.calledOnce;
         });
 
         it('should not call the api error handler the api service specifies the interceptor should be skipped', () => {
@@ -358,7 +359,30 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
-            expect(spyMethod.calledOnce).to.be.true;
+            expect(errorHandlerSpy.calledOnce).to.be.true;
+        });
+
+        it('should be able to define a custom interceptor function to only fail in some conditions', () => {
+
+
+            let customInterceptor = (rejection:ng.IHttpPromiseCallbackArg<any>):boolean => {
+
+                return rejection.status <= 500;
+            };
+
+            $httpBackend.expectGET('/api/fatal').respond(500);
+            ngRestAdapterService.skipInterceptor(customInterceptor).get('/fatal'); //get a failing url
+            $httpBackend.flush();
+
+            expect(errorHandlerSpy).to.have.been.calledOnce;
+
+            $httpBackend.expectGET('/api/recoverable').respond(416);
+            ngRestAdapterService.skipInterceptor(customInterceptor).get('/recoverable'); //get a recoverable url
+            $httpBackend.flush();
+
+            expect(errorHandlerSpy).to.have.been.calledOnce; //should not have been called again
+
+
         });
 
         it('should not catch an exception thrown from an error interceptor if it is user supplied', () => {

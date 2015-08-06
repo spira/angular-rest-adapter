@@ -92,9 +92,9 @@ module NgRestAdapter {
             return new NgRestAdapterService(config, this.$http, this.uuid4);
         }
 
-        public skipInterceptor():NgRestAdapterService {
+        public skipInterceptor(shouldSkip:ISkipInterceptorFunction = () => true):NgRestAdapterService {
 
-            let config = <INgRestAdapterServiceConfig>_.defaults({skipInterceptor:true}, this.config);
+            let config = <INgRestAdapterServiceConfig>_.defaults({skipInterceptor:shouldSkip}, this.config);
 
             return new NgRestAdapterService(config, this.$http, this.uuid4);
 

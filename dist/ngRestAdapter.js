@@ -14,8 +14,8 @@ var NgRestAdapter;
             };
             this.responseError = function (rejection) {
                 var ngRestAdapter = _this.getNgRestAdapterService();
-                var skipInterceptor = _.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor', false);
-                if (skipInterceptor === true) {
+                var skipInterceptor = _.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor');
+                if (_.isFunction(skipInterceptor) && skipInterceptor(rejection)) {
                     return _this.$q.reject(rejection); //exit early
                 }
                 var skipInterceptorRoutes = ngRestAdapter.getSkipInterceptorRoutes();
@@ -125,8 +125,9 @@ var NgRestAdapter;
             var config = _.defaults({ baseUrl: url }, this.config);
             return new NgRestAdapterService(config, this.$http, this.uuid4);
         };
-        NgRestAdapterService.prototype.skipInterceptor = function () {
-            var config = _.defaults({ skipInterceptor: true }, this.config);
+        NgRestAdapterService.prototype.skipInterceptor = function (shouldSkip) {
+            if (shouldSkip === void 0) { shouldSkip = function () { return true; }; }
+            var config = _.defaults({ skipInterceptor: shouldSkip }, this.config);
             return new NgRestAdapterService(config, this.$http, this.uuid4);
         };
         NgRestAdapterService.prototype.uuid = function () {
@@ -208,7 +209,7 @@ var NgRestAdapter;
                 defaultHeaders: {
                     'Requested-With': 'angular-rest-adapter'
                 },
-                skipInterceptor: false
+                skipInterceptor: function () { return false; }
             };
         }
         /**
