@@ -361,6 +361,29 @@ describe('Service tests', () => {
             expect(spyMethod.calledOnce).to.be.true;
         });
 
+        it('should be able to define a custom interceptor function to only fail in some conditions', () => {
+
+
+            let customInterceptor = (rejection:ng.IHttpPromiseCallbackArg<any>):boolean => {
+
+                return rejection.status >= 500;
+            };
+
+            $httpBackend.expectGET('/api/fatal').respond(500);
+            ngRestAdapterService.skipInterceptor(customInterceptor).get('/fatal'); //get a failing url
+            $httpBackend.flush();
+
+            expect(spyMethod).to.be.calledTwice;
+
+            $httpBackend.expectGET('/api/recoverable').respond(416);
+            ngRestAdapterService.skipInterceptor(customInterceptor).get('/recoverable'); //get a recoverable url
+            $httpBackend.flush();
+
+            expect(spyMethod).to.be.calledTwice; //should not have been called again
+
+
+        });
+
         it('should not catch an exception thrown from an error interceptor if it is user supplied', () => {
 
 
