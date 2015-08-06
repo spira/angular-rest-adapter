@@ -35,7 +35,7 @@ module NgRestAdapter {
     export interface INgRestAdapterServiceConfig {
         baseUrl: string;
         defaultHeaders?: IHeaderConfig
-        skipInterceptor?: boolean;
+        skipInterceptor?: ISkipInterceptorFunction;
     }
 
     export interface IApiErrorHandler {

@@ -25,7 +25,7 @@ declare module NgRestAdapter {
         patch(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         remove(url: string, data?: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         api(url: string): NgRestAdapter.NgRestAdapterService;
-        skipInterceptor(): NgRestAdapter.NgRestAdapterService;
+        skipInterceptor(shouldSkip?: ISkipInterceptorFunction): NgRestAdapter.NgRestAdapterService;
         setSkipInterceptorRoutes(excludedRoutes: RegExp[]): NgRestAdapter.NgRestAdapterService;
         getSkipInterceptorRoutes(): Array<RegExp | string>;
         uuid(): string;
@@ -42,10 +42,13 @@ declare module NgRestAdapter {
     interface INgRestAdapterServiceConfig {
         baseUrl: string;
         defaultHeaders?: IHeaderConfig;
-        skipInterceptor?: boolean;
+        skipInterceptor?: ISkipInterceptorFunction;
     }
     interface IApiErrorHandler {
         (requestConfig: ng.IRequestConfig, responseObject: ng.IHttpPromiseCallbackArg<any>): void;
+    }
+    interface ISkipInterceptorFunction {
+        (rejection: ng.IHttpPromiseCallbackArg<any>): boolean;
     }
 }
 declare module NgRestAdapter {
@@ -71,7 +74,7 @@ declare module NgRestAdapter {
         patch(url: string, data: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         remove(url: string, data?: any, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         api(url: string): NgRestAdapterService;
-        skipInterceptor(): NgRestAdapterService;
+        skipInterceptor(shouldSkip?: ISkipInterceptorFunction): NgRestAdapterService;
         uuid(): string;
         isUuid(uuid: string): boolean;
         getConfig(): NgRestAdapter.INgRestAdapterServiceConfig;

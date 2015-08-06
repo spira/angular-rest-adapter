@@ -39,7 +39,7 @@ module NgRestAdapter {
                 defaultHeaders: {
                     'Requested-With': 'angular-rest-adapter'
                 },
-                skipInterceptor: false
+                skipInterceptor: () => false
             }
 
         }

@@ -28,10 +28,10 @@ module NgRestAdapter {
         public responseError = (rejection:ng.IHttpPromiseCallbackArg<any>):any => {
 
             let ngRestAdapter = this.getNgRestAdapterService();
-            
-            let skipInterceptor = _.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor', false);
 
-            if (skipInterceptor === true){
+            let skipInterceptor = <ISkipInterceptorFunction>_.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor');
+
+            if (_.isFunction(skipInterceptor) && skipInterceptor(rejection)){
                 return this.$q.reject(rejection); //exit early
             }
 
