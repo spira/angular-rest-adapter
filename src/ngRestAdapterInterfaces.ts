@@ -46,4 +46,10 @@ module NgRestAdapter {
         (rejection:ng.IHttpPromiseCallbackArg<any>):boolean;
     }
 
+
+    export interface INgRestAdapterRequestConfig extends ng.IRequestConfig{
+        ngRestAdapterServiceConfig:INgRestAdapterServiceConfig;
+        isBaseUrl:boolean;
+    }
+
 }

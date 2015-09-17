@@ -70,6 +70,7 @@ describe('Service tests', () => {
     let $httpBackend:ng.IHttpBackendService;
     let ngRestAdapterService:NgRestAdapter.NgRestAdapterService;
     let $exceptionHandler;
+    let $rootScope:ng.IRootScopeService;
 
 
     beforeEach(()=>{
@@ -81,7 +82,7 @@ describe('Service tests', () => {
             $exceptionHandlerProvider.mode('log');
         });
 
-        inject((_$httpBackend_, _ngRestAdapter_, _$http_, _$q_, _$exceptionHandler_) => {
+        inject((_$httpBackend_, _ngRestAdapter_, _$http_, _$q_, _$exceptionHandler_, _$rootScope_) => {
 
             if (!ngRestAdapterService){
                 $httpBackend = _$httpBackend_;
@@ -89,6 +90,7 @@ describe('Service tests', () => {
                 $http = _$http_;
                 $q = _$q_;
                 $exceptionHandler = _$exceptionHandler_
+                $rootScope = _$rootScope_;
             }
 
         });
@@ -116,71 +118,105 @@ describe('Service tests', () => {
             email: seededChance.email,
         };
 
-        it('should complete a  GET request when called', () => {
+        it('should complete a  GET request when called', (done) => {
 
             $httpBackend.expectGET('/api/any').respond('ok');
-
             let responsePromise = ngRestAdapterService.get('/any');
-
             $httpBackend.flush();
-
-            expect(responsePromise).eventually.to.be.instanceOf(Object);
+            expect(responsePromise).eventually.to.be.instanceOf(Object).and.notify(done);
+            $rootScope.$apply();
 
         });
 
-        it('should complete a  HEAD request when called', () => {
+        it('should complete a  HEAD request when called', (done) => {
 
             $httpBackend.expectHEAD('/api/any').respond(200);
             let responsePromise = ngRestAdapterService.head('/any');
             $httpBackend.flush();
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
         });
 
-        it('should complete an OPTIONS request when called', () => {
+        it('should complete an OPTIONS request when called', (done) => {
 
             $httpBackend.expect('OPTIONS', '/api/any').respond(200);
             let responsePromise = ngRestAdapterService.options('/any');
             $httpBackend.flush();
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
         });
 
-        it('should complete a  PUT request when called', () => {
+        it('should complete a  PUT request when called', (done) => {
 
             $httpBackend.expectPUT('/api/any', testData).respond(200);
             let responsePromise = ngRestAdapterService.put('/any', testData);
             $httpBackend.flush();
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
         });
 
-        it('should complete a  POST request when called', () => {
+        it('should complete a  POST request when called', (done) => {
 
             $httpBackend.expectPOST('/api/any', testData).respond(200);
             let responsePromise = ngRestAdapterService.post('/any', testData);
             $httpBackend.flush();
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
         });
 
-        it('should complete a  PATCH request when called', () => {
+        it('should complete a  PATCH request when called', (done) => {
 
             $httpBackend.expectPATCH('/api/any', testData).respond(200);
             let responsePromise = ngRestAdapterService.patch('/any', testData);
             $httpBackend.flush();
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
         });
 
-        it('should complete a  DELETE request when called', () => {
+        it('should complete a  DELETE request when called', (done) => {
 
             $httpBackend.expectDELETE('/api/any').respond(200);
             let responsePromise = ngRestAdapterService.remove('/any', testData);
             $httpBackend.flush();
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
         });
+
+    });
+
+
+    describe('Api responses', () => {
+
+        it('should return an api response with config.isBaseUrl set to true when using the base url', (done) => {
+
+            $httpBackend.expectGET('/api/any').respond('ok');
+
+            let baseResponsePromise = ngRestAdapterService.get('/any');
+
+            $httpBackend.flush();
+
+            expect(baseResponsePromise).to.eventually.have.deep.property('config.isBaseUrl', true).and.notify(done);
+            $rootScope.$apply();
+        });
+
+        it('should return an api response with config.isBaseUrl set to false when using a custom url', (done) => {
+
+            $httpBackend.expectGET('/other/any').respond('ok');
+
+            let otherResponsePromise = ngRestAdapterService.api('/other').get('/any');
+
+            $httpBackend.flush();
+
+            expect(otherResponsePromise).to.eventually.have.deep.property('config.isBaseUrl', false).and.notify(done);
+            $rootScope.$apply();
+        });
+
 
     });
 
     describe('Headers', () => {
 
-        it('should add custom headers to a request', () => {
+        it('should add custom headers to a request', (done) => {
 
             let testHeaders = {
                 key1: 'Test-Header1',
@@ -211,11 +247,12 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
 
         });
 
-        it('should have `Content-Type` header when data is provided', () => {
+        it('should have `Content-Type` header when data is provided', (done) => {
 
             let data = {
                 name : seededChance.name,
@@ -230,7 +267,8 @@ describe('Service tests', () => {
 
             $httpBackend.flush();
 
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
 
         })
 
@@ -240,7 +278,7 @@ describe('Service tests', () => {
 
     describe('Custom config', () => {
 
-        it('should be able to override the $http config', () => {
+        it('should be able to override the $http config', (done) => {
 
             $httpBackend.expectGET('/api/any?foo=bar',  (headers) => {
                 return headers['Accept'] == 'text/csv';
@@ -256,7 +294,8 @@ describe('Service tests', () => {
             });
 
             $httpBackend.flush();
-            expect(responsePromise).eventually.to.be.fulfilled;
+            expect(responsePromise).eventually.to.be.fulfilled.and.notify(done);
+            $rootScope.$apply();
 
         });
 
@@ -297,7 +336,7 @@ describe('Service tests', () => {
 
         };
 
-        it('should respond with error when no error handler is set', () => {
+        it('should respond with error when no error handler is set', (done) => {
             $httpBackend.expectGET('/api/any').respond(401);
 
             let response  = ngRestAdapterService.get('/any'); //try to get a resource
@@ -305,7 +344,8 @@ describe('Service tests', () => {
             $httpBackend.flush();
 
             expect(errorHandlerSpy.called).to.be.false;
-            expect(response).eventually.to.be.rejected;
+            expect(response).eventually.to.be.rejected.and.notify(done);
+            $rootScope.$apply();
         });
 
         it('should be able to register an api error handler factory', () => {
@@ -441,7 +481,7 @@ describe('Service tests', () => {
 
         });
 
-        it('should allow the $http service to be used as normal (success)', () => {
+        it('should allow the $http service to be used as normal (success)', (done) => {
 
             (<any>ngRestAdapterService).apiErrorHandler = null; //unset the error handler (normally not allowed)
 
@@ -452,12 +492,13 @@ describe('Service tests', () => {
 
             let httpPromise = $http.get('/any');
 
-            expect(httpPromise).eventually.to.be.fulfilled.and.have.deep.property('data', 'ok');
 
             $httpBackend.flush();
 
             expect($exceptionHandler.errors).to.be.empty; //no errors initially
 
+            expect(httpPromise).eventually.to.be.fulfilled.and.have.deep.property('data', 'ok').and.notify(done);
+            $rootScope.$apply();
         });
 
         it ('should be able to set interceptor routes', () => {
@@ -472,46 +513,49 @@ describe('Service tests', () => {
 
         });
 
-        it('should not intercept excluded (by regex) domains', () => {
+        it('should not intercept excluded (by regex) domains', (done) => {
 
             $httpBackend.expectGET('/excluded/regex/example').respond(500, 'error');
 
             let httpPromise = $http.get('/excluded/regex/example');
 
-            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error');
 
             $httpBackend.flush();
 
             expect(spiedHandler).not.to.have.been.called;
+            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error').and.notify(done);
+            $rootScope.$apply();
         });
 
-        it('should not intercept excluded (by string match) domains', () => {
+        it('should not intercept excluded (by string match) domains', (done) => {
 
             $httpBackend.expectGET('/excluded/string/example').respond(500, 'error');
 
             let httpPromise = $http.get('/excluded/string/example');
 
-            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error');
 
             $httpBackend.flush();
 
             expect(spiedHandler).not.to.have.been.called;
+            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error').and.notify(done);
+            $rootScope.$apply();
         });
 
-        it('should allow the $http service to be used as normal (error intercepted)', () => {
+        it('should allow the $http service to be used as normal (error intercepted)', (done) => {
 
 
             $httpBackend.expectGET('/any').respond(500, 'error'); //the original base
 
             let httpPromise = $http.get('/any');
 
-            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error');
 
             $httpBackend.flush();
 
             expect(spiedHandler).to.have.been.calledOnce; //interceptor should have been called
 
             expect($exceptionHandler.errors).to.be.empty; //no errors after the fact
+            expect(httpPromise).eventually.to.be.rejected.and.have.deep.property('data', 'error').and.notify(done);
+            $rootScope.$apply();
 
         });
 
