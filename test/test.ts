@@ -43,7 +43,7 @@ describe('Custom configuration', function () {
             NgRestAdapterProvider.configure(<any>{invalid:'config'});
         };
 
-        expect(testInvalidConfigurationFn).to.throw(NgRestAdapter.NgRestAdapterException);
+        expect(testInvalidConfigurationFn).to.throw(NgRestAdapter.NgRestAdapterException, /Invalid properties \[invalid\] passed to config/);
 
     });
 
@@ -367,7 +367,7 @@ describe('Service tests', () => {
             };
 
 
-            expect(setFactoryFn).to.throw(NgRestAdapter.NgRestAdapterException);
+            expect(setFactoryFn).to.throw(NgRestAdapter.NgRestAdapterException, /cannot redeclare the api error handler/);
 
         });
 

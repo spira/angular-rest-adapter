@@ -144,7 +144,7 @@ var NgRestAdapter;
         };
         NgRestAdapterService.prototype.registerApiErrorHandler = function (apiErrorHandler) {
             if (_.isFunction(this.apiErrorHandler)) {
-                throw new NgRestAdapter.NgRestAdapterException("You cannot redeclare the credential promise factory");
+                throw new NgRestAdapter.NgRestAdapterException("You cannot redeclare the api error handler");
             }
             this.apiErrorHandler = apiErrorHandler;
             return this;
