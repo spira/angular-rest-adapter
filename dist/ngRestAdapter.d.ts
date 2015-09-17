@@ -50,12 +50,17 @@ declare module NgRestAdapter {
     interface ISkipInterceptorFunction {
         (rejection: ng.IHttpPromiseCallbackArg<any>): boolean;
     }
+    interface INgRestAdapterRequestConfig extends ng.IRequestConfig {
+        ngRestAdapterServiceConfig: INgRestAdapterServiceConfig;
+        isBaseUrl: boolean;
+    }
 }
 declare module NgRestAdapter {
     class NgRestAdapterService implements INgRestAdapterService {
         private config;
         private $http;
         private uuid4;
+        private originalConfig;
         private apiErrorHandler;
         private skipInterceptorRoutes;
         /**
@@ -63,8 +68,9 @@ declare module NgRestAdapter {
          * @param config
          * @param $http
          * @param uuid4
+         * @param originalConfig
          */
-        constructor(config: INgRestAdapterServiceConfig, $http: ng.IHttpService, uuid4: any);
+        constructor(config: INgRestAdapterServiceConfig, $http: ng.IHttpService, uuid4: any, originalConfig?: INgRestAdapterServiceConfig);
         private sendRequest(method, url, requestHeaders?, data?, configOverrides?);
         options(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;
         get(url: string, headers?: IHeaderConfig, configOverrides?: ng.IRequestShortcutConfig): ng.IHttpPromise<any>;

@@ -65,11 +65,13 @@ var NgRestAdapter;
          * @param config
          * @param $http
          * @param uuid4
+         * @param originalConfig
          */
-        function NgRestAdapterService(config, $http, uuid4) {
+        function NgRestAdapterService(config, $http, uuid4, originalConfig) {
             this.config = config;
             this.$http = $http;
             this.uuid4 = uuid4;
+            this.originalConfig = originalConfig;
         }
         NgRestAdapterService.prototype.sendRequest = function (method, url, requestHeaders, data, configOverrides) {
             if (requestHeaders === void 0) { requestHeaders = {}; }
@@ -87,7 +89,8 @@ var NgRestAdapter;
                 url: this.config.baseUrl + url,
                 headers: _.defaults(requestHeaders, defaultHeaders),
                 responseType: 'json',
-                ngRestAdapterServiceConfig: this.config
+                ngRestAdapterServiceConfig: this.config,
+                isBaseUrl: !this.originalConfig || this.config.baseUrl === this.originalConfig.baseUrl,
             };
             //if data is present, attach it to config
             if (!_.isEmpty(data)) {
@@ -123,12 +126,12 @@ var NgRestAdapter;
         };
         NgRestAdapterService.prototype.api = function (url) {
             var config = _.defaults({ baseUrl: url }, this.config);
-            return new NgRestAdapterService(config, this.$http, this.uuid4);
+            return new NgRestAdapterService(config, this.$http, this.uuid4, this.config);
         };
         NgRestAdapterService.prototype.skipInterceptor = function (shouldSkip) {
             if (shouldSkip === void 0) { shouldSkip = function () { return true; }; }
             var config = _.defaults({ skipInterceptor: shouldSkip }, this.config);
-            return new NgRestAdapterService(config, this.$http, this.uuid4);
+            return new NgRestAdapterService(config, this.$http, this.uuid4, this.config);
         };
         NgRestAdapterService.prototype.uuid = function () {
             return this.uuid4.generate();
@@ -164,11 +167,10 @@ var NgRestAdapter;
     NgRestAdapter.NgRestAdapterService = NgRestAdapterService;
 })(NgRestAdapter || (NgRestAdapter = {}));
 /// <reference path="../typings/tsd.d.ts" />
-var __extends = this.__extends || function (d, b) {
+var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var NgRestAdapter;
 (function (NgRestAdapter) {

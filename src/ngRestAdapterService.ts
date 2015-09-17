@@ -12,11 +12,13 @@ module NgRestAdapter {
          * @param config
          * @param $http
          * @param uuid4
+         * @param originalConfig
          */
         constructor(
             private config:INgRestAdapterServiceConfig,
             private $http: ng.IHttpService,
-            private uuid4
+            private uuid4,
+            private originalConfig?:INgRestAdapterServiceConfig
         ) {
 
         }
@@ -34,12 +36,13 @@ module NgRestAdapter {
             };
 
             //set the default config
-            var requestConfig:ng.IRequestConfig = {
+            var requestConfig:INgRestAdapterRequestConfig = {
                 method: method,
                 url:  this.config.baseUrl + url,
                 headers: _.defaults(requestHeaders, defaultHeaders),
                 responseType: 'json', //it could always be json as even a head request might throw an exception as json
-                ngRestAdapterServiceConfig: this.config
+                ngRestAdapterServiceConfig: this.config,
+                isBaseUrl: !this.originalConfig || this.config.baseUrl === this.originalConfig.baseUrl,
             };
 
             //if data is present, attach it to config
@@ -49,7 +52,7 @@ module NgRestAdapter {
 
             //handle overrides
             if (!_.isEmpty(configOverrides)){
-                requestConfig = <ng.IRequestConfig>_.defaults(configOverrides, requestConfig);
+                requestConfig = <INgRestAdapterRequestConfig>_.defaults(configOverrides, requestConfig);
             }
 
             var resultPromise = this.$http(requestConfig);
@@ -89,14 +92,14 @@ module NgRestAdapter {
 
             let config = <INgRestAdapterServiceConfig>_.defaults({baseUrl:url}, this.config);
 
-            return new NgRestAdapterService(config, this.$http, this.uuid4);
+            return new NgRestAdapterService(config, this.$http, this.uuid4, this.config);
         }
 
         public skipInterceptor(shouldSkip:ISkipInterceptorFunction = () => true):NgRestAdapterService {
 
             let config = <INgRestAdapterServiceConfig>_.defaults({skipInterceptor:shouldSkip}, this.config);
 
-            return new NgRestAdapterService(config, this.$http, this.uuid4);
+            return new NgRestAdapterService(config, this.$http, this.uuid4, this.config);
 
         }
 
