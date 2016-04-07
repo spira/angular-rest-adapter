@@ -1,55 +1,22 @@
-/// <reference path="../typings/tsd.d.ts" />
+// export interface IHeaderConfig {
+//     [index: string] : any //should be `string | (config:ng.IRequestConfig) => string;` but union types are not yet allowed see https://github.com/Microsoft/TypeScript/issues/805
+// }
 
-module NgRestAdapter {
+export interface INgRestAdapterServiceConfig {
+    baseUrl:string;
+    defaultHeaders?:ng.HttpHeaderType;
+    skipInterceptor?:ISkipInterceptorFunction;
+}
 
-    export interface INgRestAdapterService {
-        options(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
-        get(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
-        head(url:string, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
-        put(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
-        post(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
-        patch(url:string, data:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
-        remove(url:string, data?:any, headers?:IHeaderConfig, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any>;
+export interface IApiErrorHandler {
+    (requestConfig:ng.IRequestConfig, responseObject:ng.IHttpPromiseCallbackArg<any>):void;
+}
 
-        api(url:string):NgRestAdapter.NgRestAdapterService;
-        skipInterceptor(shouldSkip?:ISkipInterceptorFunction):NgRestAdapter.NgRestAdapterService;
-        setSkipInterceptorRoutes(excludedRoutes:RegExp[]):NgRestAdapter.NgRestAdapterService;
-        getSkipInterceptorRoutes():Array<RegExp|string>;
+export interface ISkipInterceptorFunction {
+    (rejection:ng.IHttpPromiseCallbackArg<any>):boolean;
+}
 
-        uuid():string;
-        isUuid(uuid:string):boolean;
-
-        getConfig():INgRestAdapterServiceConfig;
-        getErrorHandler():IApiErrorHandler;
-
-    }
-
-    export interface INgRestAdapterServiceProvider {
-        configure(config:INgRestAdapterServiceConfig): NgRestAdapterServiceProvider;
-    }
-
-    export interface IHeaderConfig {
-        [index: string] : any //should be `string | (config:ng.IRequestConfig) => string;` but union types are not yet allowed see https://github.com/Microsoft/TypeScript/issues/805
-    }
-
-    export interface INgRestAdapterServiceConfig {
-        baseUrl: string;
-        defaultHeaders?: IHeaderConfig
-        skipInterceptor?: ISkipInterceptorFunction;
-    }
-
-    export interface IApiErrorHandler {
-        (requestConfig:ng.IRequestConfig, responseObject:ng.IHttpPromiseCallbackArg<any>):void;
-    }
-
-    export interface ISkipInterceptorFunction {
-        (rejection:ng.IHttpPromiseCallbackArg<any>):boolean;
-    }
-
-
-    export interface INgRestAdapterRequestConfig extends ng.IRequestConfig{
-        ngRestAdapterServiceConfig:INgRestAdapterServiceConfig;
-        isBaseUrl:boolean;
-    }
-
+export interface INgRestAdapterRequestConfig extends ng.IRequestConfig {
+    ngRestAdapterServiceConfig:INgRestAdapterServiceConfig;
+    isBaseUrl:boolean;
 }
