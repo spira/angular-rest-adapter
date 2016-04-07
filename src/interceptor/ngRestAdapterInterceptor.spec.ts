@@ -1,9 +1,8 @@
-import "angular";
-import "angular-mocks";
-import "../ngRestAdapter";
-import {NgRestAdapterException} from "../provider/ngRestAdapterServiceProvider";
-import {NgRestAdapterService} from "../service/ngRestAdapterService";
-let expect:Chai.ExpectStatic = chai.expect;
+import {
+    expect,
+    NgRestAdapterService,
+    NgRestAdapterException
+} from "../testBootstrap.spec";
 
 let $http:ng.IHttpService;
 let $q:ng.IQService;

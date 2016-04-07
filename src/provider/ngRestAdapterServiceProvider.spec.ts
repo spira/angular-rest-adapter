@@ -1,10 +1,10 @@
-import "angular";
-import "angular-mocks";
-import "../ngRestAdapter";
-import {NgRestAdapterServiceProvider, NgRestAdapterException} from "../provider/ngRestAdapterServiceProvider";
-import {NgRestAdapterService} from "../service/ngRestAdapterService";
-import {fixtures} from  "../fixtures.spec";
-let expect:Chai.ExpectStatic = chai.expect;
+import {
+    expect, 
+    fixtures,
+    NgRestAdapterServiceProvider, 
+    NgRestAdapterService,
+    NgRestAdapterException
+} from "../testBootstrap.spec";
 
 describe('Custom configuration', function () {
 

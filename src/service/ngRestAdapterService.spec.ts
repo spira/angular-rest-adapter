@@ -1,9 +1,4 @@
-import "angular";
-import "angular-mocks";
-import "../ngRestAdapter";
-import {NgRestAdapterService} from "./ngRestAdapterService";
-import {seededChance} from  "../fixtures.spec";
-let expect:Chai.ExpectStatic = chai.expect;
+import {expect, seededChance, NgRestAdapterService} from "../testBootstrap.spec";
 
 let $http:ng.IHttpService;
 let $q:ng.IQService;
