@@ -33,7 +33,7 @@ Install through bower:
 
 ```ts
     
-    import {ngRestAdapterProvider} from "angular-rest-adapter";
+    import {NgRestAdapterServiceProvider} from "angular-rest-adapter";
     
     angular.module('app', ['ngRestAdapter'])
     .config(['ngRestAdapterProvider', function(ngRestAdapterProvider:NgRestAdapterServiceProvider){
