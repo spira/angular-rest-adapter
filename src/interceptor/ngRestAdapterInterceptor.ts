@@ -1,6 +1,6 @@
-import {NgRestAdapterService} from "../service/ngRestAdapterService";
-import {ISkipInterceptorFunction} from "../ngRestAdapterInterfaces";
 import * as _ from "lodash";
+import {NgRestAdapterService} from "../service/ngRestAdapterService";
+import {ISkipInterceptorFunction, IApiErrorHandler} from "../ngRestAdapterInterfaces";
 import {NgRestAdapterErrorHandlerNotFoundException} from "../provider/ngRestAdapterServiceProvider";
 
 /**
@@ -15,22 +15,22 @@ export class NgRestAdapterInterceptor {
      * @param _$q
      * @param _$injector
      */
-    static $inject = ['$q', '$injector'];
+    static $inject:string[] = ['$q', '$injector'];
 
     constructor(private $q:ng.IQService,
                 private $injector:ng.auto.IInjectorService) {
     }
 
-    private getNgRestAdapterService = ():NgRestAdapterService=> {
+    private getNgRestAdapterService = ():NgRestAdapterService => {
         if (this.ngRestAdapter == null) {
             this.ngRestAdapter = this.$injector.get<NgRestAdapterService>('ngRestAdapter');
         }
         return this.ngRestAdapter;
     };
 
-    public responseError = (rejection:ng.IHttpPromiseCallbackArg<any>):any => {
+    public responseError = (rejection:ng.IHttpPromiseCallbackArg<any>):ng.IPromise<any> => {
 
-        let ngRestAdapter = this.getNgRestAdapterService();
+        let ngRestAdapter:NgRestAdapterService = this.getNgRestAdapterService();
 
         let skipInterceptor = <ISkipInterceptorFunction>_.get(rejection.config, 'ngRestAdapterServiceConfig.skipInterceptor');
 
@@ -60,7 +60,7 @@ export class NgRestAdapterInterceptor {
 
         try {
 
-            let errorHandler = ngRestAdapter.getErrorHandler();
+            let errorHandler:IApiErrorHandler = ngRestAdapter.getErrorHandler();
 
             errorHandler(rejection.config, rejection);
 

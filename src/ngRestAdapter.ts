@@ -12,7 +12,7 @@ export * from "./ngRestAdapterInterfaces";
 angular.module('ngRestAdapter', ['uuid4'])
     .provider('ngRestAdapter', NgRestAdapterServiceProvider)
     .service('ngRestAdapterInterceptor', NgRestAdapterInterceptor)
-    .config(['$httpProvider', '$injector', ($httpProvider:ng.IHttpProvider) => {
+    .config(['$httpProvider', ($httpProvider:ng.IHttpProvider) => {
 
         $httpProvider.interceptors.push('ngRestAdapterInterceptor');
     }])

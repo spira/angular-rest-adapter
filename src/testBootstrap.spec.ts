@@ -7,4 +7,4 @@ chai.use(chaiAsPromised);
 
 export * from "./fixtures.spec";
 export * from "./ngRestAdapter";
-export var expect = chai.expect;
+export const expect = chai.expect;

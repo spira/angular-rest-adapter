@@ -171,7 +171,12 @@ describe('Interceptor tests', () => {
     describe('Base $http usage', () => {
 
         let spiedHandler;
+        let routeRegex = /\/excluded\/regex.*/;
+        let stringMatch = '/excluded/string/example';
+
         beforeEach(() => {
+
+            ngRestAdapterService.setSkipInterceptorRoutes([routeRegex, stringMatch]);
 
             $exceptionHandler.errors = []; //clear errors
 
@@ -197,11 +202,6 @@ describe('Interceptor tests', () => {
         });
 
         it('should be able to set interceptor routes', () => {
-
-            let routeRegex = /\/excluded\/regex.*/;
-            let stringMatch = '/excluded/string/example';
-
-            ngRestAdapterService.setSkipInterceptorRoutes([routeRegex, stringMatch]);
 
             expect(ngRestAdapterService.getSkipInterceptorRoutes()[0]).to.equal(routeRegex);
             expect(ngRestAdapterService.getSkipInterceptorRoutes()[1]).to.equal(stringMatch);

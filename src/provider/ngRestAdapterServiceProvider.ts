@@ -44,7 +44,7 @@ export class NgRestAdapterServiceProvider implements ng.IServiceProvider {
     /**
      * Set the configuration
      * @param config
-     * @returns {NgRestAdapter.NgRestAdapterServiceProvider}
+     * @returns {NgRestAdapterServiceProvider}
      */
     public configure(config:INgRestAdapterServiceConfig):NgRestAdapterServiceProvider {
 
@@ -57,8 +57,6 @@ export class NgRestAdapterServiceProvider implements ng.IServiceProvider {
         return this;
     }
 
-    public $get = ['$http', 'uuid4', function NgRestAdapterServiceFactory($http, uuid4) {
-        return new NgRestAdapterService(this.config, $http, uuid4);
-    }];
+    public $get = ['$http', 'uuid4', ($http, uuid4) => new NgRestAdapterService(this.config, $http, uuid4)];
 
 }

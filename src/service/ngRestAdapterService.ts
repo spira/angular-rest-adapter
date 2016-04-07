@@ -25,12 +25,11 @@ export class NgRestAdapterService {
                 private $http:ng.IHttpService,
                 private uuid4,
                 private originalConfig?:INgRestAdapterServiceConfig) {
-
     }
 
     private sendRequest(method:string, url:string, requestHeaders:ng.HttpHeaderType = {}, data?:any, configOverrides?:ng.IRequestShortcutConfig) {
 
-        var defaultHeaders:ng.HttpHeaderType = {
+        let defaultHeaders:ng.HttpHeaderType = {
             'Content-Type': (config:ng.IRequestConfig) => {
                 if (data || (config && config.data)) {
                     return 'application/json';
@@ -41,7 +40,7 @@ export class NgRestAdapterService {
         };
 
         //set the default config
-        var requestConfig:INgRestAdapterRequestConfig = {
+        let requestConfig:INgRestAdapterRequestConfig = {
             method: method,
             url: this.config.baseUrl + url,
             headers: _.defaults(requestHeaders, defaultHeaders),
@@ -60,9 +59,7 @@ export class NgRestAdapterService {
             requestConfig = <INgRestAdapterRequestConfig>_.defaults(configOverrides, requestConfig);
         }
 
-        var resultPromise = this.$http(requestConfig);
-
-        return resultPromise;
+        return this.$http(requestConfig);
     }
 
     public options(url:string, headers?:ng.HttpHeaderType, configOverrides?:ng.IRequestShortcutConfig):ng.IHttpPromise<any> {
