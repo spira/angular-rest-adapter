@@ -1,6 +1,6 @@
 {
   "name": "angular-rest-adapter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Angular REST http request adapter",
   "main": "dist/ngRestAdapter.js",
   "typings": "dist/ngRestAdapter.d.ts",
